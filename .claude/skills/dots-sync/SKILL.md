@@ -11,6 +11,39 @@ description: Sincronizar dotfiles al repo .dots. Invocá con /dots-sync o cuando
 - **Alias**: `dots` (equivale a `git --git-dir=$HOME/Work/personal/.dots --work-tree=$HOME`)
 - **Remote**: `git@github.com:pablokoll/.dots.git`
 
+## Setup en máquina nueva
+
+```bash
+# 1. Clonar el repo bare
+git clone --bare git@github.com:pablokoll/.dots.git $HOME/Work/personal/.dots
+
+# 2. Agregar el alias
+echo 'alias dots="git --git-dir=$HOME/Work/personal/.dots --work-tree=$HOME"' >> ~/.zshrc
+source ~/.zshrc
+
+# 3. Ocultar untracked files
+dots config status.showUntrackedFiles no
+
+# 4. Checkout (si hay conflictos, hacer backup primero)
+dots checkout
+# Si hay conflictos:
+# mkdir -p ~/.dots-backup
+# dots checkout 2>&1 | grep -E "\s+\." | awk '{print $1}' | xargs -I{} mv {} ~/.dots-backup/{}
+# dots checkout
+```
+
+### VSCode — instalar extensiones
+
+```bash
+cat ~/.config/Code/User/extensions.txt | xargs -L1 code --install-extension
+```
+
+### tmux — instalar plugins
+
+Abrir tmux y presionar `prefix + I` (TPM descarga todos los plugins definidos en `tmux.conf`).
+
+---
+
 ## Protocolo
 
 ### Paso 1: Mostrar cambios
@@ -63,7 +96,7 @@ Confirmá con: "Pusheado a github.com/pablokoll/.dots ✓"
 
 ## Reglas
 
-- Nunca subir: `.ssh/config`, `.claude/settings.json`, archivos `.bak` o `.backup`
+- Nunca subir: `.ssh/config`, `.gitconfig`, `.claude/settings.json`, archivos `.bak` o `.backup`
 - Si aparece algo potencialmente sensible (tokens, IPs, passwords), avisá antes de continuar
 - El `.gitignore` en `~/` ya excluye los archivos sensibles conocidos — confiar en él
 - Plugins de TPM y lazy.nvim no se trackean — ignorar cambios en `~/.config/tmux/plugins/` y `~/.local/share/nvim/`
@@ -82,7 +115,9 @@ Confirmá con: "Pusheado a github.com/pablokoll/.dots ✓"
 | kitty | `~/.config/kitty/` |
 | tmux | `~/.config/tmux/tmux.conf` |
 | zsh | `~/.zshrc` |
-| git | `~/.gitconfig` |
+| git | `~/.gitconfig.example` (real `.gitconfig` excluded) |
 | starship | `~/.config/starship.toml` |
 | Claude Code | `~/.claude/CLAUDE.md` |
+| Claude Skills | `~/.claude/skills/` |
+| VSCode | `~/.config/Code/User/settings.json`, `keybindings.json`, `snippets/`, `extensions.txt` |
 | SSH (example) | `~/.ssh/config.example` |
