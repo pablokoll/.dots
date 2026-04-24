@@ -1,0 +1,49 @@
+{
+  "workbench.colorTheme": "Catppuccin Mocha",
+  "update.mode": "none",
+  "extensions.experimental.affinity": {
+    "asvetliakov.vscode-neovim": 1
+  },
+  "claudeCode.preferredLocation": "sidebar",
+
+  // ── VSCode Neovim ──────────────────────────────────────────────────────────
+  "vscode-neovim.neovimExecutablePaths.linux": "/usr/bin/nvim",
+
+  "vscode-neovim.compositeKeys": {},
+  "editor.minimap.enabled": false,
+  "github.copilot.enable": {
+    "*": false,
+    "plaintext": false,
+    "markdown": false,
+    "scminput": false
+  },
+  "workbench.iconTheme": "vscode-icons",
+  "gitlens.ai.model": "anthropic:claude-haiku-4-5",
+  "[json]": {
+    "editor.defaultFormatter": "vscode.json-language-features"
+  },
+  "explorer.confirmDelete": false,
+  "cSpell.userWords": [
+    "discountcountryproxy"
+  ],
+  "chat.disableAIFeatures": true,
+  "multiCommand.commands": [
+    {
+      "command": "multiCommand.selectWordAndReplace",
+      "sequence": [
+        "editor.action.addSelectionToNextFindMatch",
+        "editor.action.startFindReplaceAction"
+      ]
+    }
+  ],
+  "json.schemaDownload.trustedDomains": {
+    "https://schemastore.azurewebsites.net/": true,
+    "https://raw.githubusercontent.com/microsoft/vscode/": true,
+    "https://raw.githubusercontent.com/devcontainers/spec/": true,
+    "https://www.schemastore.org/": true,
+    "https://json.schemastore.org/": true,
+    "https://json-schema.org/": true,
+    "https://developer.microsoft.com/json-schemas/": true,
+    "https://biomejs.dev": true
+  }
+}

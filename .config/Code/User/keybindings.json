@@ -1,0 +1,229 @@
+// Place your key bindings in this file to override the defaults
+[
+    // ── Existing keybindings ───────────────────────────────────────────────
+    {
+        "key": "shift+alt+down",
+        "command": "editor.action.copyLinesDownAction",
+        "when": "editorTextFocus && !editorReadonly"
+    },
+    {
+        "key": "ctrl+shift+alt+down",
+        "command": "-editor.action.copyLinesDownAction",
+        "when": "editorTextFocus && !editorReadonly"
+    },
+    {
+        "key": "shift+alt+up",
+        "command": "editor.action.copyLinesUpAction",
+        "when": "editorTextFocus && !editorReadonly"
+    },
+    {
+        "key": "ctrl+shift+alt+up",
+        "command": "-editor.action.copyLinesUpAction",
+        "when": "editorTextFocus && !editorReadonly"
+    },
+    {
+        "key": "ctrl+[Backslash]",
+        "command": "editor.action.commentLine",
+        "when": "editorTextFocus && !editorReadonly"
+    },
+    {
+        "key": "ctrl+shift+7",
+        "command": "-editor.action.commentLine",
+        "when": "editorTextFocus && !editorReadonly"
+    },
+    {
+        "key": "ctrl+'",
+        "command": "editor.action.addCommentLine",
+        "when": "editorTextFocus && !editorReadonly"
+    },
+    {
+        "key": "ctrl+k ctrl+c",
+        "command": "-editor.action.addCommentLine",
+        "when": "editorTextFocus && !editorReadonly"
+    },
+    {
+        "key": "ctrl+i ctrl+i",
+        "command": "formatHtmlInPhp.format",
+        "when": "editorLangId == 'php'"
+    },
+    {
+        "key": "ctrl+alt+f",
+        "command": "-formatHtmlInPhp.format",
+        "when": "editorLangId == 'php'"
+    },
+    {
+        "key": "ctrl+alt+i",
+        "command": "phpformatter.fix"
+    },
+    // ── Panel toggles (abren+foco / cierran) ─────────────────────────────
+    { "key": "alt+t", "command": "workbench.action.terminal.toggleTerminal" },
+    { "key": "ctrl+`", "command": "-workbench.action.terminal.toggleTerminal" },
+    { "key": "alt+d", "command": "workbench.debug.action.toggleRepl" },
+    { "key": "ctrl+shift+y", "command": "-workbench.debug.action.toggleRepl" },
+    { "key": "alt+p", "command": "workbench.actions.view.problems" },
+    { "key": "alt+o", "command": "workbench.action.output.toggleOutput" },
+    {
+        "key": "alt+g",
+        "command": "git.checkout"
+    },
+    {
+        "key": "ctrl+escape",
+        "command": "-claude-code.runClaude.keyboard"
+    },
+    {
+        "key": "shift+enter",
+        "command": "workbench.action.terminal.sendSequence",
+        "args": { "text": "\\\r\n" },
+        "when": "terminalFocus"
+    },
+
+    // ── LazyVim-style Space leader (normal mode only) ──────────────────────
+    // ── Files ─────────────────────────────────────────────────────────────
+    { "key": "space space", "command": "workbench.action.quickOpen",                "when": "editorTextFocus && neovim.mode == 'normal'" },
+    { "key": "space f",     "command": "workbench.action.quickOpen",                "when": "editorTextFocus && neovim.mode == 'normal'" },
+    { "key": "space r",     "command": "workbench.action.openRecent",               "when": "editorTextFocus && neovim.mode == 'normal'" },
+    { "key": "space s",     "command": "workbench.action.files.save",               "when": "editorTextFocus && neovim.mode == 'normal'" },
+
+    // ── Search ────────────────────────────────────────────────────────────
+    { "key": "space /",     "command": "workbench.action.findInFiles",              "when": "editorTextFocus && neovim.mode == 'normal'" },
+    { "key": "space shift+s", "command": "workbench.action.gotoSymbol",             "when": "editorTextFocus && neovim.mode == 'normal'" },
+    { "key": "space shift+t", "command": "workbench.action.showAllSymbols",         "when": "editorTextFocus && neovim.mode == 'normal'" },
+
+    // ── Buffers ───────────────────────────────────────────────────────────
+    { "key": "space ,",     "command": "workbench.action.showAllEditors",           "when": "editorTextFocus && neovim.mode == 'normal'" },
+    { "key": "space b d",   "command": "workbench.action.closeActiveEditor",        "when": "editorTextFocus && neovim.mode == 'normal'" },
+    { "key": "space b o",   "command": "workbench.action.closeOtherEditors",        "when": "editorTextFocus && neovim.mode == 'normal'" },
+    { "key": "space b n",   "command": "workbench.action.nextEditor",               "when": "editorTextFocus && neovim.mode == 'normal'" },
+    { "key": "space b p",   "command": "workbench.action.previousEditor",           "when": "editorTextFocus && neovim.mode == 'normal'" },
+    { "key": "space b b",   "command": "workbench.action.showAllEditors",           "when": "editorTextFocus && neovim.mode == 'normal'" },
+    { "key": "space b D",   "command": "workbench.action.closeEditorsInGroup",      "when": "editorTextFocus && neovim.mode == 'normal'" },
+
+    // ── Explorer ──────────────────────────────────────────────────────────
+    { "key": "space e",     "command": "workbench.explorer.fileView.focus", "when": "editorTextFocus && neovim.mode == 'normal'" },
+
+    // ── Sidebar izquierda toggle ──────────────────────────────────────────
+    { "key": "space shift+e", "command": "workbench.action.toggleSidebarVisibility","when": "editorTextFocus && neovim.mode == 'normal'" },
+
+    // ── Sidebar derecha toggle ────────────────────────────────────────────
+    { "key": "space shift+c", "command": "workbench.action.toggleAuxiliaryBar",    "when": "editorTextFocus && neovim.mode == 'normal'" },
+
+    // ── Git ───────────────────────────────────────────────────────────────
+    { "key": "space shift+g", "command": "workbench.view.scm",                      "when": "editorTextFocus && neovim.mode == 'normal'" },
+
+    // ── Run & Debug ───────────────────────────────────────────────────────
+    { "key": "space d",       "command": "workbench.view.debug",                    "when": "editorTextFocus && neovim.mode == 'normal'" },
+
+    // ── Extensions ────────────────────────────────────────────────────────
+    { "key": "space shift+x", "command": "workbench.view.extensions",               "when": "editorTextFocus && neovim.mode == 'normal'" },
+
+    // ── Replace ───────────────────────────────────────────────────────────
+    // <leader>rr: selecciona la palabra bajo cursor y abre find&replace
+    { "key": "space r r",   "command": "multiCommand.selectWordAndReplace",          "when": "editorTextFocus && neovim.mode == 'normal'" },
+    // <leader>rn: selecciona siguiente ocurrencia una por una (ctrl+d style)
+    { "key": "space r n",   "command": "editor.action.addSelectionToNextFindMatch", "when": "editorTextFocus && neovim.mode == 'normal'" },
+
+    // ── LSP / Code actions ────────────────────────────────────────────────
+    { "key": "space a",     "command": "editor.action.quickFix",                    "when": "editorTextFocus && neovim.mode == 'normal'" },
+    { "key": "space shift+r", "command": "editor.action.rename",                    "when": "editorTextFocus && neovim.mode == 'normal'" },
+    { "key": "space shift+f", "command": "editor.action.formatDocument",            "when": "editorTextFocus && neovim.mode == 'normal'" },
+    { "key": "space i",     "command": "editor.action.goToImplementation",          "when": "editorTextFocus && neovim.mode == 'normal'" },
+    { "key": "space t",     "command": "editor.action.goToTypeDefinition",          "when": "editorTextFocus && neovim.mode == 'normal'" },
+    { "key": "space x",     "command": "workbench.actions.view.problems",           "when": "editorTextFocus && neovim.mode == 'normal'" },
+
+    // ── Terminal ──────────────────────────────────────────────────────────
+    { "key": "space `",     "command": "workbench.action.terminal.toggleTerminal",  "when": "editorTextFocus && neovim.mode == 'normal'" },
+
+    // ── Splits ────────────────────────────────────────────────────────────
+    { "key": "space v",     "command": "workbench.action.splitEditor",              "when": "editorTextFocus && neovim.mode == 'normal'" },
+    { "key": "space h",     "command": "workbench.action.splitEditorDown",          "when": "editorTextFocus && neovim.mode == 'normal'" },
+    { "key": "space w",     "command": "workbench.action.focusNextGroup",           "when": "editorTextFocus && neovim.mode == 'normal'" },
+
+    // ── UI ────────────────────────────────────────────────────────────────
+    { "key": "space z",     "command": "workbench.action.toggleZenMode",            "when": "editorTextFocus && neovim.mode == 'normal'" },
+
+    // ── Sidebar (funciona siempre, sin importar el foco) ──────────────────
+    { "key": "ctrl+b",      "command": "workbench.action.toggleSidebarVisibility" },
+
+    // ── Move lines (como Alt+j/k en nvim) ────────────────────────────────
+    { "key": "alt+j", "command": "editor.action.moveLinesDownAction", "when": "editorTextFocus && !editorReadonly" },
+    { "key": "alt+k", "command": "editor.action.moveLinesUpAction",   "when": "editorTextFocus && !editorReadonly" },
+
+    // ══════════════════════════════════════════════════════════════════════
+    // ── GLOBAL NAVIGATION (funciona en cualquier panel/contexto) ──────────
+    // ══════════════════════════════════════════════════════════════════════
+
+    // ── Tab navigation: shift+h / shift+l (como LazyVim buffers) ─────────
+    { "key": "shift+h", "command": "workbench.action.previousEditor",           "when": "!editorTextFocus || neovim.mode == 'normal'" },
+    { "key": "shift+l", "command": "workbench.action.nextEditor",               "when": "!editorTextFocus || neovim.mode == 'normal'" },
+
+    // ── Navegación entre splits: ctrl+h/j/k/l ────────────────────────────
+    { "key": "ctrl+h", "command": "workbench.action.focusLeftGroup",            "when": "!editorTextFocus || neovim.mode == 'normal'" },
+    { "key": "ctrl+l", "command": "workbench.action.focusRightGroup",           "when": "!editorTextFocus || neovim.mode == 'normal'" },
+    { "key": "ctrl+k", "command": "workbench.action.focusAboveGroup",           "when": "!editorTextFocus || neovim.mode == 'normal'" },
+    { "key": "ctrl+j", "command": "workbench.action.focusBelowGroup",           "when": "!editorTextFocus || neovim.mode == 'normal'" },
+
+    // ── Space leader global (cuando no hay foco en editor) ───────────────
+    // Files
+    { "key": "space space", "command": "workbench.action.quickOpen",            "when": "!editorTextFocus" },
+    { "key": "space f",     "command": "workbench.action.quickOpen",            "when": "!editorTextFocus" },
+    { "key": "space r",     "command": "workbench.action.openRecent",           "when": "!editorTextFocus" },
+    { "key": "space s",     "command": "workbench.action.files.save",           "when": "!editorTextFocus" },
+
+    // Search
+    { "key": "space /",     "command": "workbench.action.findInFiles",          "when": "!editorTextFocus" },
+    { "key": "space shift+s", "command": "workbench.action.gotoSymbol",         "when": "!editorTextFocus" },
+    { "key": "space shift+t", "command": "workbench.action.showAllSymbols",     "when": "!editorTextFocus" },
+
+    // Buffers
+    { "key": "space ,",     "command": "workbench.action.showAllEditors",       "when": "!editorTextFocus" },
+    { "key": "space b d",   "command": "workbench.action.closeActiveEditor",    "when": "!editorTextFocus" },
+    { "key": "space b o",   "command": "workbench.action.closeOtherEditors",    "when": "!editorTextFocus" },
+    { "key": "space b n",   "command": "workbench.action.nextEditor",           "when": "!editorTextFocus" },
+    { "key": "space b p",   "command": "workbench.action.previousEditor",       "when": "!editorTextFocus" },
+    { "key": "space b b",   "command": "workbench.action.showAllEditors",       "when": "!editorTextFocus" },
+    { "key": "space b D",   "command": "workbench.action.closeEditorsInGroup",  "when": "!editorTextFocus" },
+
+    // Explorer
+    { "key": "space e",     "command": "workbench.explorer.fileView.focus", "when": "!editorTextFocus" },
+
+    // Sidebar izquierda toggle
+    { "key": "space shift+e", "command": "workbench.action.toggleSidebarVisibility", "when": "!editorTextFocus" },
+
+    // Sidebar derecha toggle
+    { "key": "space shift+c", "command": "workbench.action.toggleAuxiliaryBar",      "when": "!editorTextFocus" },
+
+    // Git
+    { "key": "space shift+g", "command": "workbench.view.scm",                  "when": "!editorTextFocus" },
+
+    // Run & Debug
+    { "key": "space d",       "command": "workbench.view.debug",                 "when": "!editorTextFocus" },
+
+    // Extensions
+    { "key": "space shift+x", "command": "workbench.view.extensions",           "when": "!editorTextFocus" },
+
+    // Terminal
+    { "key": "space `",     "command": "workbench.action.terminal.toggleTerminal", "when": "!editorTextFocus" },
+
+    // Splits
+    { "key": "space v",     "command": "workbench.action.splitEditor",          "when": "!editorTextFocus" },
+    { "key": "space h",     "command": "workbench.action.splitEditorDown",      "when": "!editorTextFocus" },
+    { "key": "space w",     "command": "workbench.action.focusNextGroup",       "when": "!editorTextFocus" },
+
+    // UI
+    { "key": "space z",     "command": "workbench.action.toggleZenMode",        "when": "!editorTextFocus" },
+
+    // ── Explorer panel: j/k para navegar cuando sidebar tiene foco ────────
+    { "key": "j", "command": "list.focusDown",   "when": "listFocus && !editorTextFocus && !inputFocus" },
+    { "key": "k", "command": "list.focusUp",     "when": "listFocus && !editorTextFocus && !inputFocus" },
+    { "key": "h", "command": "list.collapse",    "when": "listFocus && !editorTextFocus && !inputFocus" },
+    { "key": "l", "command": "list.expand",      "when": "listFocus && !editorTextFocus && !inputFocus" },
+    { "key": "enter", "command": "list.select",  "when": "listFocus && !editorTextFocus && !inputFocus" },
+
+    // ── Escape desde cualquier panel/input → foco al editor ───────────────
+    // Cancela el default de cerrar panel y en su lugar mueve foco al editor
+    { "key": "escape", "command": "workbench.action.focusActiveEditorGroup", "when": "!editorTextFocus && !inputFocus" },
+    { "key": "escape", "command": "workbench.action.focusActiveEditorGroup", "when": "inputFocus && !editorTextFocus" },
+    // Cancelar el cierre del search/findInFiles panel con escape (lo reemplazamos arriba)
+    { "key": "escape", "command": "-search.action.cancel",                   "when": "searchViewletFocus" },
+    { "key": "escape", "command": "workbench.action.focusActiveEditorGroup", "when": "searchViewletFocus" }
+]
