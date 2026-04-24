@@ -1,0 +1,337 @@
+-- ═══════════════════════════════════════════════════════════════════════════
+-- nvim-dap - Debug Adapter Protocol para Neovim
+-- ═══════════════════════════════════════════════════════════════════════════
+-- Configuración de debugging para C/C++ usando codelldb
+--
+-- Keybindings principales:
+-- <leader>db - Toggle breakpoint
+-- <leader>dc - Continue
+-- <leader>di - Step into
+-- <leader>do - Step over
+-- <leader>dO - Step out
+-- <leader>dt - Terminate
+-- <leader>du - Toggle DAP UI
+-- <leader>de - Evaluate expression
+-- <leader>dr - REPL toggle
+--
+-- ═══════════════════════════════════════════════════════════════════════════
+
+return {
+  -- ─────────────────────────────────────────────────────────────────────────
+  -- nvim-dap - Core debugging plugin
+  -- ─────────────────────────────────────────────────────────────────────────
+  {
+    "mfussenegger/nvim-dap",
+    dependencies = {
+      -- UI para mejorar la experiencia de debugging
+      {
+        "rcarriga/nvim-dap-ui",
+        dependencies = {
+          "nvim-neotest/nvim-nio",
+        },
+        config = function()
+          local dap, dapui = require("dap"), require("dapui")
+
+          -- Configurar DAP UI
+          dapui.setup({
+            icons = { expanded = "", collapsed = "", current_frame = "" },
+            mappings = {
+              expand = { "<CR>", "<2-LeftMouse>" },
+              open = "o",
+              remove = "d",
+              edit = "e",
+              repl = "r",
+              toggle = "t",
+            },
+            layouts = {
+              {
+                elements = {
+                  { id = "scopes", size = 0.25 },
+                  { id = "breakpoints", size = 0.25 },
+                  { id = "stacks", size = 0.25 },
+                  { id = "watches", size = 0.25 },
+                },
+                size = 40,
+                position = "left",
+              },
+              {
+                elements = {
+                  { id = "repl", size = 0.5 },
+                  { id = "console", size = 0.5 },
+                },
+                size = 10,
+                position = "bottom",
+              },
+            },
+            floating = {
+              max_height = nil,
+              max_width = nil,
+              border = "rounded",
+              mappings = {
+                close = { "q", "<Esc>" },
+              },
+            },
+          })
+
+          -- Auto-abrir UI cuando se inicia debugging
+          dap.listeners.after.event_initialized["dapui_config"] = function()
+            dapui.open()
+          end
+          dap.listeners.before.event_terminated["dapui_config"] = function()
+            dapui.close()
+          end
+          dap.listeners.before.event_exited["dapui_config"] = function()
+            dapui.close()
+          end
+        end,
+      },
+
+      -- Virtual text para mostrar valores de variables inline
+      {
+        "theHamsta/nvim-dap-virtual-text",
+        opts = {
+          enabled = true,
+          enabled_commands = true,
+          highlight_changed_variables = true,
+          highlight_new_as_changed = false,
+          show_stop_reason = true,
+          commented = false,
+          only_first_definition = true,
+          all_references = false,
+          virt_text_pos = "eol",
+        },
+      },
+
+      -- Integración con Mason para instalar adapters
+      {
+        "jay-babu/mason-nvim-dap.nvim",
+        dependencies = "mason.nvim",
+        cmd = { "DapInstall", "DapUninstall" },
+        opts = {
+          automatic_installation = true,
+          handlers = {},
+          ensure_installed = {
+            "codelldb",
+          },
+        },
+      },
+    },
+
+    -- Lazy loading: cargar cuando se ejecute un comando de DAP
+    keys = {
+      {
+        "<leader>db",
+        function()
+          require("dap").toggle_breakpoint()
+        end,
+        desc = "Toggle Breakpoint",
+      },
+      {
+        "<leader>dB",
+        function()
+          require("dap").set_breakpoint(vim.fn.input("Breakpoint condition: "))
+        end,
+        desc = "Breakpoint Condition",
+      },
+      {
+        "<leader>dc",
+        function()
+          require("dap").continue()
+        end,
+        desc = "Continue",
+      },
+      {
+        "<leader>dC",
+        function()
+          require("dap").run_to_cursor()
+        end,
+        desc = "Run to Cursor",
+      },
+      {
+        "<leader>dg",
+        function()
+          require("dap").goto_()
+        end,
+        desc = "Go to Line (No Execute)",
+      },
+      {
+        "<leader>di",
+        function()
+          require("dap").step_into()
+        end,
+        desc = "Step Into",
+      },
+      {
+        "<leader>dj",
+        function()
+          require("dap").down()
+        end,
+        desc = "Down",
+      },
+      {
+        "<leader>dk",
+        function()
+          require("dap").up()
+        end,
+        desc = "Up",
+      },
+      {
+        "<leader>dl",
+        function()
+          require("dap").run_last()
+        end,
+        desc = "Run Last",
+      },
+      {
+        "<leader>do",
+        function()
+          require("dap").step_over()
+        end,
+        desc = "Step Over",
+      },
+      {
+        "<leader>dO",
+        function()
+          require("dap").step_out()
+        end,
+        desc = "Step Out",
+      },
+      {
+        "<leader>dp",
+        function()
+          require("dap").pause()
+        end,
+        desc = "Pause",
+      },
+      {
+        "<leader>dr",
+        function()
+          require("dap").repl.toggle()
+        end,
+        desc = "Toggle REPL",
+      },
+      {
+        "<leader>ds",
+        function()
+          require("dap").session()
+        end,
+        desc = "Session",
+      },
+      {
+        "<leader>dt",
+        function()
+          require("dap").terminate()
+        end,
+        desc = "Terminate",
+      },
+      {
+        "<leader>du",
+        function()
+          require("dapui").toggle({})
+        end,
+        desc = "Dap UI",
+      },
+      {
+        "<leader>dw",
+        function()
+          require("dap.ui.widgets").hover()
+        end,
+        desc = "Widgets",
+      },
+      {
+        "<leader>de",
+        function()
+          require("dapui").eval()
+        end,
+        desc = "Eval",
+        mode = { "n", "v" },
+      },
+    },
+
+    config = function()
+      local dap = require("dap")
+
+      -- Iconos para el gutter
+      vim.fn.sign_define("DapBreakpoint", { text = "", texthl = "DiagnosticSignError", linehl = "", numhl = "" })
+      vim.fn.sign_define(
+        "DapBreakpointCondition",
+        { text = "", texthl = "DiagnosticSignWarn", linehl = "", numhl = "" }
+      )
+      vim.fn.sign_define(
+        "DapBreakpointRejected",
+        { text = "", texthl = "DiagnosticSignError", linehl = "", numhl = "" }
+      )
+      vim.fn.sign_define("DapLogPoint", { text = "", texthl = "DiagnosticSignInfo", linehl = "", numhl = "" })
+      vim.fn.sign_define("DapStopped", { text = "", texthl = "DiagnosticSignInfo", linehl = "", numhl = "" })
+
+      -- ─────────────────────────────────────────────────────────────────────
+      -- Configuración de codelldb para C/C++
+      -- ─────────────────────────────────────────────────────────────────────
+      local codelldb_path = vim.fn.stdpath("data") .. "/mason/packages/codelldb/extension/adapter/codelldb"
+
+      dap.adapters.codelldb = {
+        type = "server",
+        port = "${port}",
+        executable = {
+          command = codelldb_path,
+          args = { "--port", "${port}" },
+        },
+      }
+
+      -- Configuraciones de launch para C/C++
+      dap.configurations.c = {
+        {
+          name = "Launch file",
+          type = "codelldb",
+          request = "launch",
+          program = function()
+            -- Intenta detectar el ejecutable compilado
+            local cwd = vim.fn.getcwd()
+            local filename = vim.fn.expand("%:t:r")
+
+            -- Buscar ejecutable en el directorio actual
+            local executable_path = cwd .. "/" .. filename
+
+            if vim.fn.filereadable(executable_path) == 1 then
+              return executable_path
+            end
+
+            -- Si no existe, preguntar por el path
+            return vim.fn.input("Path to executable: ", cwd .. "/", "file")
+          end,
+          cwd = "${workspaceFolder}",
+          stopOnEntry = false,
+          args = function()
+            local args_string = vim.fn.input("Program arguments: ")
+            return vim.split(args_string, " +")
+          end,
+        },
+        {
+          name = "Attach to process",
+          type = "codelldb",
+          request = "attach",
+          pid = require("dap.utils").pick_process,
+          args = {},
+        },
+      }
+
+      -- Usar la misma configuración para C++
+      dap.configurations.cpp = dap.configurations.c
+
+      -- ─────────────────────────────────────────────────────────────────────
+      -- Comandos útiles
+      -- ─────────────────────────────────────────────────────────────────────
+      vim.api.nvim_create_user_command("DapUIToggle", function()
+        require("dapui").toggle()
+      end, { desc = "Toggle DAP UI" })
+
+      vim.api.nvim_create_user_command("DapUIEval", function()
+        require("dapui").eval()
+      end, { desc = "Evaluate expression" })
+
+      vim.api.nvim_create_user_command("DapUIFloatElement", function(opts)
+        require("dapui").float_element(opts.args)
+      end, { nargs = 1, desc = "Float DAP UI element" })
+    end,
+  },
+}

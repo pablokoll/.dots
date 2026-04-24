@@ -1,0 +1,14 @@
+# tmux plugins (managed by TPM)
+.config/tmux/plugins/
+
+# SSH real config (use .ssh/config.example instead)
+.ssh/config
+
+# Claude Code settings (contains local MCP paths)
+.claude/settings.json
+.claude/settings.local.json
+
+# Hyprland/walker backups
+.config/hypr/*.backup-*
+.config/hypr/*.bak*
+.config/walker/*.bak*

@@ -1,0 +1,12 @@
+@import "../omarchy/current/theme/waybar.css";
+
+* {
+  all: unset;
+
+}
+
+window#waybar {
+  background-color: @background;
+  border: none;
+  border-radius: 0;
+}

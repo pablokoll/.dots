@@ -1,0 +1,13 @@
+{
+  "layer": "top",
+  "output": "eDP-1",
+  "position": "right",
+  "width": 90,
+  "spacing": 0,
+  "exclusive": true,
+  "passthrough": false,
+  "reload_style_on_change": true,
+  "gtk-layer-shell": true,
+  "modules-center": [],
+  "modules-right": []
+}

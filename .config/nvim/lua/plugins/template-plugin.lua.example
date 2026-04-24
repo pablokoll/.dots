@@ -1,0 +1,102 @@
+-- ═══════════════════════════════════════════════════════════════════════════
+-- Template para Nuevo Plugin
+-- ═══════════════════════════════════════════════════════════════════════════
+-- Copia este archivo como base para agregar nuevos plugins
+-- 1. Copia: cp template-plugin.lua.example mi-plugin.lua
+-- 2. Edita el contenido según necesites
+-- 3. Reinicia Neovim o ejecuta :Lazy reload
+
+-- ───────────────────────────────────────────────────────────────────────────
+-- Opción 1: Plugin Simple (sin configuración)
+-- ───────────────────────────────────────────────────────────────────────────
+-- return {
+--   "autor/nombre-plugin",
+-- }
+
+-- ───────────────────────────────────────────────────────────────────────────
+-- Opción 2: Plugin con Configuración Básica
+-- ───────────────────────────────────────────────────────────────────────────
+-- return {
+--   "autor/nombre-plugin",
+--
+--   -- Lazy loading (elegir UNO)
+--   cmd = "ComandoPlugin",          -- Carga al ejecutar comando
+--   -- event = "BufReadPre",        -- O carga en evento
+--   -- ft = { "python", "lua" },    -- O carga en filetypes
+--
+--   -- Configuración
+--   opts = {
+--     opcion1 = true,
+--     opcion2 = "valor",
+--   },
+--
+--   -- Keymaps (opcional)
+--   keys = {
+--     { "<leader>xx", "<cmd>Comando<cr>", desc = "Descripción" },
+--   },
+-- }
+
+-- ───────────────────────────────────────────────────────────────────────────
+-- Opción 3: Plugin con Dependencias
+-- ───────────────────────────────────────────────────────────────────────────
+-- return {
+--   "autor/plugin-principal",
+--   dependencies = {
+--     "autor/dependencia-1",
+--     "autor/dependencia-2",
+--   },
+--   opts = {},
+-- }
+
+-- ───────────────────────────────────────────────────────────────────────────
+-- Opción 4: Plugin con Configuración Avanzada
+-- ───────────────────────────────────────────────────────────────────────────
+-- return {
+--   "autor/nombre-plugin",
+--
+--   config = function()
+--     local plugin = require("plugin")
+--
+--     plugin.setup({
+--       -- Tu configuración aquí
+--     })
+--
+--     -- Código adicional post-setup
+--   end,
+-- }
+
+-- ───────────────────────────────────────────────────────────────────────────
+-- Opción 5: Extender Plugin Existente de LazyVim
+-- ───────────────────────────────────────────────────────────────────────────
+-- return {
+--   "nvim-telescope/telescope.nvim",  -- Plugin que ya está en LazyVim
+--
+--   opts = function(_, opts)
+--     -- Modificar opciones existentes
+--     opts.nueva_opcion = true
+--     return opts
+--   end,
+--
+--   keys = {
+--     -- Deshabilitar keymap default
+--     { "<leader>ff", false },
+--
+--     -- Agregar nuevo keymap
+--     { "<leader>fh", "<cmd>Telescope help_tags<cr>", desc = "Find Help" },
+--   },
+-- }
+
+-- ───────────────────────────────────────────────────────────────────────────
+-- Opción 6: Múltiples Plugins Relacionados
+-- ───────────────────────────────────────────────────────────────────────────
+-- return {
+--   {
+--     "autor/plugin-1",
+--     opts = {},
+--   },
+--
+--   {
+--     "autor/plugin-2",
+--     opts = {},
+--   },
+-- }
