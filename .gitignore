@@ -4,6 +4,9 @@
 # SSH real config (use .ssh/config.example instead)
 .ssh/config
 
+# Git config
+.gitconfig
+
 # Claude Code settings (contains local MCP paths)
 .claude/settings.json
 .claude/settings.local.json

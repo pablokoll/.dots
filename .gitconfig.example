@@ -1,0 +1,4 @@
+
+# Client-specific account configuration
+[includeIf "gitdir:~/Work/clients/<client>/"]
+    path = ~/.gitconfig-<client>
