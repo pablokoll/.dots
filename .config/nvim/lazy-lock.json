@@ -2,7 +2,7 @@
   "99": { "branch": "master", "commit": "0172d3caae2d8b967c9d47aa7557295f1481e5df" },
   "LazyVim": { "branch": "main", "commit": "83d90f339defdb109a6ede333865a66ffc7ef6aa" },
   "SchemaStore.nvim": { "branch": "main", "commit": "0c303573345e710a233f5ba75f9aadc05852771b" },
-  "avante.nvim": { "branch": "main", "commit": "9a7793461549939f1d52b2b309a1aa44680170c8" },
+  "avante.nvim": { "branch": "main", "commit": "8c84af0f09e5d9058362ac58401a8e7b047d826e" },
   "bamboo.nvim": { "branch": "master", "commit": "1309bc88bffcf1bedc3e84e7fa9004de93da774a" },
   "blink.cmp": { "branch": "main", "commit": "78336bc89ee5365633bcf754d93df01678b5c08f" },
   "blink.compat": { "branch": "main", "commit": "2ed6d9a28b07fa6f3bface818470605f8896408c" },

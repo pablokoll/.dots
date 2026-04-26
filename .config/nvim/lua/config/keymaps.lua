@@ -51,6 +51,25 @@ vim.keymap.set("i", "<M-BS>", "<C-w>", { desc = "Delete word backwards (Alt)" })
 vim.keymap.set({ "n", "v" }, "P", '"0p', { desc = "Paste from yank register (after cursor)" })
 
 -- ═══════════════════════════════════════════════════════════════════════════
+-- Replace keymaps
+-- ═══════════════════════════════════════════════════════════════════════════
+-- Flujo: * para buscar, luego <leader>rn (uno por uno) o <leader>rr (todos)
+
+-- * busca sin saltar (queda en la ocurrencia actual)
+vim.keymap.set("n", "*", "*N", { desc = "Search word under cursor (stay in place)" })
+
+-- <leader>rn: reemplaza la ocurrencia actual y salta a la siguiente (cgn)
+vim.keymap.set("n", "<leader>rn", "cgn", { desc = "Replace next occurrence (repeat with .)" })
+
+-- <leader>rr: abre :%s/<palabra>/ listo para escribir el reemplazo
+vim.keymap.set("n", "<leader>rr", function()
+  local word = vim.fn.expand("<cword>")
+  vim.fn.setreg("/", "\\<" .. word .. "\\>")
+  vim.opt.hlsearch = true
+  return ":%s/\\<" .. word .. "\\>/"
+end, { desc = "Replace all occurrences of word under cursor", expr = true })
+
+-- ═══════════════════════════════════════════════════════════════════════════
 -- Spell checking keymaps
 -- ═══════════════════════════════════════════════════════════════════════════
 vim.keymap.set("n", "<leader>zs", function()
