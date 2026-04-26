@@ -12,6 +12,7 @@
 - Al crear notas (daily note, quick note, o cualquier otro archivo en el vault), el idioma del contenido debe coincidir con el idioma en que escribí las respuestas. Si respondí en inglés → nota en inglés. Si respondí en español → nota en español.
 - La configuración de Claude Code está en ~/.claude/
 - Para todo lo relacionado con Hyprland, Omarchy, configuración del OS, nvim, dotfiles, LazyVim, y temas similares de mi entorno de escritorio/sistema, usa el agente de Omarchy (Task tool con contexto de documentación de Omarchy)
+- **Vault en proyectos**: cuando estás en un proyecto y el usuario menciona algo del vault (Obsidian), leer primero `.claude/project-link.md` en el directorio raíz del proyecto — ahí está el path del vault y contexto del proyecto vinculado. Si el archivo no existe o no tiene la info necesaria, preguntar al usuario dónde está el archivo o cómo se llama para buscarlo en el vault
 
 ---
 

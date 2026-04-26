@@ -153,14 +153,14 @@
     // ══════════════════════════════════════════════════════════════════════
 
     // ── Tab navigation: shift+h / shift+l (como LazyVim buffers) ─────────
-    { "key": "shift+h", "command": "workbench.action.previousEditor",           "when": "!editorTextFocus || neovim.mode == 'normal'" },
-    { "key": "shift+l", "command": "workbench.action.nextEditor",               "when": "!editorTextFocus || neovim.mode == 'normal'" },
+    { "key": "shift+h", "command": "workbench.action.previousEditor",           "when": "(!editorTextFocus || neovim.mode == 'normal') && !scmInputIsActive && !terminalFocus && !inQuickOpen && !inputFocus" },
+    { "key": "shift+l", "command": "workbench.action.nextEditor",               "when": "(!editorTextFocus || neovim.mode == 'normal') && !scmInputIsActive && !terminalFocus && !inQuickOpen && !inputFocus" },
 
     // ── Navegación entre splits: ctrl+h/j/k/l ────────────────────────────
-    { "key": "ctrl+h", "command": "workbench.action.focusLeftGroup",            "when": "!editorTextFocus || neovim.mode == 'normal'" },
-    { "key": "ctrl+l", "command": "workbench.action.focusRightGroup",           "when": "!editorTextFocus || neovim.mode == 'normal'" },
-    { "key": "ctrl+k", "command": "workbench.action.focusAboveGroup",           "when": "!editorTextFocus || neovim.mode == 'normal'" },
-    { "key": "ctrl+j", "command": "workbench.action.focusBelowGroup",           "when": "!editorTextFocus || neovim.mode == 'normal'" },
+    { "key": "ctrl+h", "command": "workbench.action.focusLeftGroup",            "when": "(!editorTextFocus || neovim.mode == 'normal') && !terminalFocus && !inputFocus" },
+    { "key": "ctrl+l", "command": "workbench.action.focusRightGroup",           "when": "(!editorTextFocus || neovim.mode == 'normal') && !terminalFocus && !inputFocus" },
+    { "key": "ctrl+k", "command": "workbench.action.focusAboveGroup",           "when": "(!editorTextFocus || neovim.mode == 'normal') && !terminalFocus && !inputFocus" },
+    { "key": "ctrl+j", "command": "workbench.action.focusBelowGroup",           "when": "(!editorTextFocus || neovim.mode == 'normal') && !terminalFocus && !inputFocus" },
 
     // ── Space leader global (cuando no hay foco en editor) ───────────────
     // Files
