@@ -71,7 +71,7 @@ return {
   -- ─────────────────────────────────────────────────────────────────────────
   {
     "folke/tokyonight.nvim",
-    enabled = false, -- Si usas otro colorscheme
+    -- enabled = false, -- habilitado en zz-colorscheme-override.lua
     -- O personalizar:
     -- opts = {
     --   style = "storm", -- storm, night, moon, day

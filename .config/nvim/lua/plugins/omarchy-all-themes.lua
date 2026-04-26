@@ -56,6 +56,6 @@ return {
   {
     "folke/tokyonight.nvim",
     lazy = true,
-    priority = 1000,
+    priority = 1001,
   },
 }

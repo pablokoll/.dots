@@ -18,12 +18,6 @@ return {
     },
   },
 
-  -- ─────────────────────────────────────────────────────────────────────────
-  -- Tokyonight - Colorscheme por defecto de LazyVim
-  -- ─────────────────────────────────────────────────────────────────────────
-  -- Deshabilitado porque usamos el tema de Omarchy
-  {
-    "folke/tokyonight.nvim",
-    enabled = false,
-  },
+  -- tokyonight habilitado en colorscheme-override.lua (priority 1001, gana a theme.lua)
+
 }
