@@ -1,0 +1,20 @@
+#!/bin/bash
+
+GAP_BAR_CSS=~/.config/waybar/gap-bar-active.css
+GAP_BAR_WIDTH=150
+
+if pgrep -f "waybar.*gap-bar.jsonc" > /dev/null; then
+    pkill -f "waybar.*gap-bar.jsonc"
+    echo "/* gap-bar inactive — managed by toggle-gap-bar script */" > "$GAP_BAR_CSS"
+else
+    waybar -c ~/.config/waybar/gap-bar.jsonc -s ~/.config/waybar/gap-bar.css &
+    cat > "$GAP_BAR_CSS" << EOF
+/* gap-bar active — managed by toggle-gap-bar script */
+window#waybar.eDP-1 {
+  margin-right: ${GAP_BAR_WIDTH}px;
+}
+EOF
+fi
+
+# Force top bar style reload
+pkill -SIGUSR2 -f "^/usr/bin/waybar$" 2>/dev/null || pkill -SIGUSR2 waybar 2>/dev/null
