@@ -1,127 +1,100 @@
 ---
 name: project-log
-description: Loggear trabajo realizado en un proyecto al Project Index del vault de Obsidian. Invocá con /project-log o cuando el usuario diga "anotemos el trabajo", "loggemos esto", "actualizá el project index", o cuando se esté por hacer /clear o /compact en una sesión con proyecto activo.
+description: Log work done in a project to the vault Project Index. Trigger on /project-log, "log the work", "update the project index", or before /clear in a session with an active project.
 ---
 
-# project-log — Log de Trabajo en Proyecto
+# project-log
 
-Usá este skill cuando el usuario invoque `/project-log`, o automáticamente antes de `/clear` o `/compact` si se detecta un Project Index vinculado.
-
-## Vault Path
-
+## Vault
 `/home/pablo/Dropbox/Aplicaciones/remotely-save/personal-vault/`
 
-## Protocolo
+## Protocol
 
-### Paso 0: Registrar tiempo de inicio
+### 1. Find the Project Index
+- Check `.claude/project-link.md` in current dir → read `vault_path`
+- If not found, search vault for `*Index.md` with tag `project/index` matching current repo
+- If still not found, ask the user or suggest `/project-init` / `/project-link`
 
-Al invocar el skill, registrá mentalmente el timestamp actual como `session_start`. Esto se usa al final para calcular la duración aproximada de la sesión.
-
-Si la conversación lleva mucho tiempo (visible por la longitud del contexto o mensajes), estimá el tiempo de forma razonable — no tiene que ser exacto, solo aproximado (redondear a 5-10 min está bien).
-
-### Paso 1: Encontrar el Project Index
-
-Intentá en este orden:
-
-1. Buscá `.claude/project-link.md` en el directorio actual → leé el campo `vault_path`
-2. Si no hay link, buscá en el vault un `*Index.md` con tag `project/index` cuyo campo `repo:` coincida con el directorio actual
-3. Si tampoco, preguntá al usuario: "¿Cuál es el Project Index de este proyecto en el vault?" o sugerí `/project-init` o `/project-link`
-
-### Paso 2: Leer contexto git (silencioso)
-
-Antes de preguntar nada, recolectá contexto del repo si hay `.git` en el dir actual:
-
+### 2. Read git context (silent)
+If `.git` exists in current dir:
 ```bash
-git log --oneline -5          # últimos 5 commits
-git diff --stat HEAD          # archivos modificados no commiteados
-git status --short            # estado actual
+git log --oneline -5
+git diff --stat HEAD
+git status --short
 ```
+Build a draft from commits and changed files. If no git or clean repo, skip and ask directly.
 
-Con esto armá un **borrador interno** de la entrada:
-- Resumen inferido de los commits y cambios
-- Lista de archivos tocados del diff/status
-- Decisiones inferibles de los mensajes de commit
+### 3. Guided conversation (one question at a time)
+Show draft and confirm:
+1. **Summary** — "Based on the commits: `<draft>`. Adjust?"
+2. **Files touched** — "Detected: `<list>`. Anything to add or remove?"
+3. **Decisions** — "Any important decision to document? ('none' to skip)"
+4. **Diagnose output** — if `/diagnose` was used in this session, ask: "Include the bug diagnosis? (root cause, fix, post-mortem)" — if yes, add a `## 🐛 Bug diagnosed` block to the session file
+5. **Next steps** — "What are the next steps?"
 
-### Paso 3: Flujo conversacional guiado
+### 4. Check for existing session
+Glob `<project>/sessions/` for existing files. If found, show most recent and ask: continue that session or create new one?
 
-Mostrá el borrador al usuario y preguntá de a una cosa:
-
-1. **Resumen**: "Basándome en los commits y cambios, esto es lo que haría: `<resumen inferido>`. ¿Lo ajustamos o está bien?"
-2. **Archivos**: "Detecté estos archivos tocados: `<lista>`. ¿Falta algo o querés cambiar algo?"
-3. **Decisiones**: "¿Hubo alguna decisión importante que vale documentar? (o 'ninguna' para saltear)"
-4. **Próximos pasos**: "¿Cuáles son los próximos pasos?"
-
-Si no hay `.git` o el repo está limpio, arrancá con las preguntas de cero sin borrador.
-
-Si el usuario da todo junto de golpe, procesalo directamente sin preguntar de nuevo.
-
-### Paso 4: Calcular tiempo de sesión
-
-Antes de escribir la entrada, estimá la duración de la sesión:
-
-- Mirá el timestamp actual (`date`) vs el momento de inicio de la conversación
-- Si no tenés el timestamp exacto, estimá razonablemente según la longitud del contexto y los temas tratados
-- Redondeá a 5-10 min — no necesita ser exacto
-- Si el usuario menciona explícitamente cuánto trabajó, usá eso
-
-Determiná si la sesión tuvo **una sola tarea o múltiples**:
-- **Una tarea**: el tiempo va en el título → `### YYYY-MM-DD (45 min)`
-- **Múltiples tareas**: el tiempo va como campo separado → `**Tiempo:** 1h 20min`
-
-### Paso 5: Actualizar Work Log
-
-Agregá una nueva entrada al final de `## 📋 Work Log` en el Project Index.
-
-**Formato una tarea:**
-```markdown
-### YYYY-MM-DD (45 min)
-**Resumen:** <resumen confirmado>
-**Archivos tocados:** <lista confirmada>
-**Decisiones:** <decisiones, o "—">
-**Próximos pasos:** <próximos pasos, o "—">
-```
-
-**Formato múltiples tareas:**
-```markdown
-### YYYY-MM-DD
-**Tiempo:** 1h 20min
-**Resumen:** <resumen confirmado>
-**Archivos tocados:** <lista confirmada>
-**Decisiones:** <decisiones, o "—">
-**Próximos pasos:** <próximos pasos, o "—">
-```
-
-### Paso 6: Regenerar sección de Archivos del Proyecto
-
-Escaneá la carpeta del proyecto en el vault con Glob y regenerá `## 📁 Archivos del Proyecto` listando todos los `.md` excepto el Index:
+### 5. Write Work Log entry
+Append to `## 📋 Work Log` in the Project Index:
 
 ```markdown
-## 📁 Archivos del Proyecto
-<!-- auto-generado por /project-log — no editar manualmente -->
-- [[archivo1]]
-- [[archivo2]]
+### YYYY-MM-DD (~<time>)
+**Summary:** <summary>
+**Files:** <list>
+**Decisions:** <decisions or —>
+**Next steps:** <next steps or —>
+**Session:** [[sessions/YYYY-MM-DD - <name>]]
 ```
 
-### Paso 7: Actualizar frontmatter
+### 6. Create or update session file
+- **New session**: suggest name (3-5 words from commits/summary), confirm, create `sessions/YYYY-MM-DD - <name>.md`
+- **Existing session**: append new content with `---` separator and timestamp
 
-Actualizá el campo `modified:` del Project Index con la fecha actual (`YYYY-MM-DD`).
+Session file format:
+```markdown
+---
+tags:
+  - project/session
+project: <name>
+created: YYYY-MM-DD
+modified: YYYY-MM-DD
+---
 
-### Paso 8: Confirmar
+# Session YYYY-MM-DD — <name>
 
-Mostrá: "Logueado en [[<nombre> Index]]. Entrada del <fecha> agregada (~<tiempo> trabajado)."
+## Goal
+<inferred and confirmed>
 
-## Trigger antes de /clear o /compact
+## What was done
+<steps, decisions, key details>
 
-1. Detectá si hay un Project Index vinculado (Paso 0)
-2. Si existe, preguntá: "Antes de limpiar — ¿anotamos el trabajo de esta sesión en el Project Index?"
-3. Si acepta → ejecutá el flujo completo
-4. Si no → dejá pasar
+## 🐛 Bug diagnosed (if applicable)
+**Root cause:** <what caused it>
+**Fix:** <what was done>
+**Post-mortem:** <what would have prevented it>
 
-## Reglas
+## Status
+<what's complete, what's pending>
 
-- Siempre leer contexto git antes de preguntar — las preguntas son confirmación, no punto de partida
-- Una pregunta a la vez
-- El usuario dirige — si corrige el borrador, usá su versión
-- `📁 Archivos del Proyecto` siempre se regenera automáticamente
-- No modificar `🔑 Decisiones Importantes`, `🗣️ Meetings & Chats`, ni `✅ TODO` — son secciones manuales
-- Si no hay git o el repo está limpio, preguntar de cero sin inventar
+## Next steps
+<list>
+```
+
+### 7. Regenerate Related Files
+Glob project folder → replace `## 📁 Related Files` in Index with list of all `.md` files except the Index itself.
+
+### 8. Update `modified:` in Index frontmatter.
+
+### 9. Confirm
+"Logged in [[<name> Index]]. Entry for <date> added (~<time> worked)."
+
+## Before /clear or /compact
+If a Project Index is linked, ask: "Before clearing — log this session to the Project Index?"
+
+## Rules
+- Read git context before asking — questions are confirmation, not starting point
+- One question at a time
+- If user gives everything at once, process directly
+- Don't touch `## ✅ TODO` or `## 🔑 ADR's` — those are manual
+- `## 📁 Related Files` always regenerated automatically

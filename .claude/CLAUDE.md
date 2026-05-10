@@ -1,322 +1,97 @@
-# Configuración Global de Claude Code
+# Claude Code — Global Config
 
-## Modo de Comunicación
+## Communication
 
-- **Caveman mode SIEMPRE activo** — responde terse como caveman inteligente. Sin artículos, sin filler, sin cortesías. Fragmentos OK. Sinónimos cortos. Patrón: `[cosa] [acción] [razón]. [siguiente paso].` Código/commits/seguridad: escritura normal. Intensidad: full.
+- **Caveman mode always active** — terse, no filler, no pleasantries. Fragments OK. Short synonyms. Pattern: `[thing] [action] [reason]. [next step].` Code/commits/security: write normal. Full intensity.
 
-## Instrucciones Generales
+## General Rules
 
-- Todo lo que sea sudo me lo pasas y yo lo ejecuto en otra terminal que quiero que puedas revisar el resultado en caso de que yo te lo pida, sino solamente espera a que yo te dé la orden de continuar
-- Si no estás dentro de un proyecto, todo lo que tengas que clonar de repositorios o descargar lo haces dentro de ~/Documents o ~/Downloads (si no sabes cuál de los dos, pregúntame)
-- Al crear notas en el vault (daily note, quick note, etc.), si respondí en inglés revisá ortografía y gramática del inglés al final y preguntame si quiero corregir algo. No hagas esto en conversaciones normales ni en español.
-- Al crear notas (daily note, quick note, o cualquier otro archivo en el vault), el idioma del contenido debe coincidir con el idioma en que escribí las respuestas. Si respondí en inglés → nota en inglés. Si respondí en español → nota en español.
-- La configuración de Claude Code está en ~/.claude/
-- Para todo lo relacionado con Hyprland, Omarchy, configuración del OS, nvim, dotfiles, LazyVim, y temas similares de mi entorno de escritorio/sistema, usa el agente de Omarchy (Task tool con contexto de documentación de Omarchy)
-- **Vault en proyectos**: cuando estás en un proyecto y el usuario menciona algo del vault (Obsidian), leer primero `.claude/project-link.md` en el directorio raíz del proyecto — ahí está el path del vault y contexto del proyecto vinculado. Si el archivo no existe o no tiene la info necesaria, preguntar al usuario dónde está el archivo o cómo se llama para buscarlo en el vault
+- Anything requiring `sudo` — give me the command, I run it in another terminal. Wait for me to share output before continuing, unless I say otherwise.
+- Outside a project: clone repos or downloads go to `~/Documents` or `~/Downloads` — ask if unsure which.
+- When creating vault notes (daily note, quick note, etc.): note language must match my response language. English answers → English note. Spanish answers → Spanish note.
+- If I replied in English when creating a vault note: check spelling/grammar at the end and ask if I want corrections. Skip this in normal conversation or Spanish.
+- Claude Code config lives in `~/.claude/`
+- Hyprland, Omarchy, OS config, nvim, dotfiles, LazyVim → use the Omarchy agent (Task tool with Omarchy docs context).
+- **Vault in projects**: if I mention Obsidian while in a project, read `.claude/project-link.md` first — it has the vault path and linked project context. If missing, ask.
 
----
+## Workflow
 
-## 🔄 Workflow Estándar
-
-### Paso 1: Iniciar Sesión
-```bash
-/workflow-init
-```
-**Qué hace:**
-- Crea estructura `.claude/session/` en el proyecto actual
-- Genera reportes base: session-info, research, planning, implementation-status, qa-report
-- Registra fecha/hora de inicio y objetivos
-
-### Paso 2: Research (Investigación)
-```bash
-/workflow-research
-```
-**Qué hace:**
-- Investiga codebase, documentación, arquitectura existente
-- Analiza el problema o tarea a resolver
-- Documenta hallazgos en `.claude/session/research.md`
-- Lista archivos/componentes relevantes encontrados
-- Identifica dependencias y constraints
-
-**Output:** Reporte de research con contexto completo
-
-### Paso 3: Planificación
-```bash
-/workflow-plan [--format=simple|detailed]
-```
-**Qué hace:**
-- Lee el reporte de research como base
-- Genera plan de implementación
-- Define arquitectura y tecnologías
-- Documenta en `.claude/session/planning.md`
-- Lista tareas ordenadas por prioridad
-
-**Formatos:**
-- `simple` (default): Plan ágil y conciso
-- `detailed`: Plan completo con arquitectura
-
-**Output:** Plan estructurado listo para implementar
-
-### Paso 4: Implementación
-**Trabajo normal de coding, refactoring, debugging**
-- Claude trabaja en el código según el plan
-- Actualiza estado periódicamente con `/workflow-status`
-- Documenta decisiones importantes
-
-### Paso 5: Actualizar Estado (Durante implementación)
-```bash
-/workflow-status
-```
-**Qué hace:**
-- Actualiza `.claude/session/implementation-status.md`
-- Muestra: ✅ Completado | 🚧 En progreso | ⏳ Pendiente | 🐛 Issues
-- Documenta decisiones técnicas tomadas
-
-### Paso 6: Quality Assurance
-```bash
-/workflow-qa [--scope=all|functionality|code|architecture]
-```
-**Qué hace:**
-- Lee el plan y compara con implementación
-- Sugiere pruebas necesarias (unit, integration, e2e)
-- Ejecuta tests si se confirma
-- Audita calidad del código
-- Genera reporte en `.claude/session/qa-report.md`
-- Proporciona score de calidad y recomendaciones
-
-**Scopes:**
-- `all`: Auditoría completa (default)
-- `functionality`: Solo funcionalidad y tests
-- `code`: Solo calidad de código
-- `architecture`: Solo arquitectura
-
-### Paso 7: Commit
-```bash
-/commit [tipo] [scope] ["mensaje"]
-```
-**Qué hace:**
-- Analiza cambios con `git status` y `git diff`
-- Auto-detecta tipo y scope si no se especifican
-- Genera mensaje conventional commit
-- Muestra mensaje y pide confirmación
-- Ejecuta commit
-
-### Paso 8: Notas en Obsidian (Opcional)
-```bash
-/obsidian-note "contenido de la nota"
-/obsidian-sync
-```
-**Qué hace:**
-- Crea notas de proyecto en Obsidian
-- Sincroniza reportes de sesión a Obsidian vault
-
----
-
-## 📋 Comandos Disponibles
-
-### Workflow (Flujo de trabajo)
-| Comando | Descripción |
-|---------|-------------|
-| `/workflow-init` | Iniciar sesión con estructura de reportes |
-| `/workflow-research` | Fase de research e investigación |
-| `/workflow-plan` | Planificación basada en research |
-| `/workflow-status` | Actualizar estado de implementación |
-| `/workflow-qa` | Quality assurance y testing |
-
-### Tools (Herramientas utilitarias)
-| Comando | Descripción |
-|---------|-------------|
-| `/commit` | Commit inteligente con conventional commits |
-| `/docs` | Generar/actualizar documentación |
-| `/perf` | Análisis de performance |
-| `/security` | Análisis de seguridad |
-
-### Obsidian (Integración con Obsidian)
-| Comando | Descripción |
-|---------|-------------|
-| `/obsidian-note` | Crear nota rápida en vault |
-| `/obsidian-project` | Crear nota de proyecto con contexto completo |
-| `/obsidian-sync` | Sincronizar reportes de sesión a Obsidian |
-| `/obsidian-search` | Buscar notas en vault |
-
----
-
-## 📁 Estructura de Sesión
-
-Cada proyecto tendrá una carpeta `.claude/session/` con:
+Skills live in `~/.claude/skills/`. Invoke via `/skill-name`. The active workflow:
 
 ```
-.claude/session/
-├── session-info.md           # Info general (fecha, objetivos, proyecto)
-├── research.md               # 📋 Hallazgos del research
-├── planning.md               # 📝 Plan de implementación
-├── implementation-status.md  # ⚙️ Estado actual de implementación
-└── qa-report.md             # ✅ Resultados de QA y testing
+grill-me | grill-with-docs → to-prd → to-issues → sdd (+tdd +diagnose) → project-log
 ```
 
-Estos archivos se pueden sincronizar a Obsidian con `/obsidian-sync`.
+### Vault skills
+| Skill | Trigger |
+|-------|---------|
+| `/daily-note` | "daily note", "registremos el día" |
+| `/quick-note` | "anotá esto", "quiero guardar una idea" |
+| `/sync-pending-notes` | "sincronizá los pendings" |
+| `/refine-notes` | "refinemos esta nota", "saquemos atomic notes" |
+| `/literature-note` | "literature note de X", "sesión de estudio" |
+| `/review-vault` | "revisemos el vault", "auditoría del vault" |
+| `/zoom-out` | "zoom out", "revisión estratégica" |
 
----
+### Project skills
+| Skill | Trigger |
+|-------|---------|
+| `/project-init` | "nuevo proyecto", "inicializá el proyecto" |
+| `/project-link` | "vinculá el proyecto", "linkear el repo" |
+| `/project-log` | "loggemos esto", "actualizá el index", before /clear |
+| `/grill-me` | "grill me", "preguntame sobre esto", "necesito pensar X" |
+| `/grill-with-docs` | "grill with docs", "revisemos la arquitectura con X" |
+| `/to-prd` | "escribí el PRD", "documentá esto" |
+| `/to-issues` | "rompé esto en tasks", "creá los issues" |
+| `/diagnose` | "hay un bug", "algo está roto", "debuggeemos esto" |
+| `/tdd` | "implementemos con TDD", "tests primero", "arrancamos un task" |
+| `/sdd` | "ejecutemos con subagentes", "arrancamos los tasks", "implementemos el plan" |
 
-## ⚙️ Stack y Preferencias
+### Dots
+| Skill | Trigger |
+|-------|---------|
+| `/dots-sync` | "sincronizá los dotfiles", "backup config" |
 
-### JavaScript/TypeScript
-**Frontend:**
-- React, Next.js, Vite
-- Tailwind CSS, shadcn/ui
-- Zustand o Context API para state management
-- React Query para data fetching
+## Stack & Preferences
 
-**Backend:**
-- Express.js, NestJS, Node.js
-- Prisma ORM
-- tRPC para type-safe APIs
+### JS/TS
+- Frontend: React, Next.js, Vite · Tailwind CSS, shadcn/ui · Zustand · React Query
+- Backend: Express.js, NestJS · Prisma ORM · tRPC
+- DB: PostgreSQL (preferred) · MongoDB · Redis
+- Testing: Vitest/Jest · Playwright · Testing Library
+- Tools: ESLint + Prettier (or Biome) · Husky · pnpm
+- Infra: Docker Compose · GitHub Actions
 
-**Database:**
-- PostgreSQL (preferido)
-- MongoDB (para casos específicos)
-- Redis (caching)
+### Code Conventions
+- Variables/functions: `camelCase`
+- React components: `PascalCase`
+- Files: `kebab-case`
+- Constants: `UPPER_SNAKE_CASE`
+- Directories: `kebab-case`
 
-**Testing:**
-- Jest o Vitest (unit tests)
-- Playwright (e2e tests)
-- Testing Library (componentes React)
+### Design Principles
+SOLID · Clean Architecture (when it fits) · DRY · KISS · YAGNI · Separation of Concerns
 
-**Tools:**
-- ESLint, Prettier (o Biome)
-- Husky, Lint-staged
-- pnpm (package manager preferido)
+## Commits
 
-**Infrastructure:**
-- Docker, Docker Compose
-- GitHub Actions (CI/CD)
+Conventional commits: `type(scope): description`
 
-### Convenciones de Código
-- **Variables/funciones**: camelCase (`getUserData`)
-- **Componentes React**: PascalCase (`UserProfile`)
-- **Archivos**: kebab-case (`user-profile.tsx`)
-- **Constantes**: UPPER_SNAKE_CASE (`API_BASE_URL`)
-- **Directorios**: kebab-case (`user-management/`)
+Types: `feat` `fix` `docs` `style` `refactor` `test` `chore` `perf` `ci`
 
-### Principios de Diseño
-- SOLID principles
-- Clean Architecture (cuando aplique)
-- DRY (Don't Repeat Yourself)
-- KISS (Keep It Simple, Stupid)
-- YAGNI (You Aren't Gonna Need It)
-- Separation of Concerns
+Never add `Co-Authored-By` or any AI attribution to commits.
 
----
+## Second Brain — Obsidian Vault
 
-## 📝 Integración con Obsidian
+Path: `/home/pablo/Dropbox/Aplicaciones/remotely-save/personal-vault/`
 
-**Vault Path**: `~/Documents/Obsidian/dropbox`
+This vault is my Second Brain and PKM (Personal Knowledge Management) system. Everything goes here:
+- **Projects** — all active work, tracked in `<name> Index.md` per project
+- **Knowledge** — study, CS, architecture, technical notes (Zettelkasten: atomic/molecule/literature)
+- **Ideas** — captured as fleeting notes in `Resources/Inbox/`, processed into permanent notes
+- **Life** — daily notes, personal areas, finance, journal
 
-### Estructura en Obsidian
-```
-Projects/
-  ├── [project-name]/
-  │   ├── notes/           # Notas generales del proyecto
-  │   ├── sessions/        # Reportes de sesiones Claude (synced)
-  │   ├── planning/        # Planes y arquitectura
-  │   └── resources/       # Recursos y referencias
-```
+Structure: PARA (Projects / Area / Resources / Archive).
 
-### Tags Usados
-- `mcp/claude/session` - Notas de sesiones de Claude
-- `project/[name]` - Proyecto específico
-- `note/development` - Notas de desarrollo
-- `note/planning` - Notas de planificación
-- `note/qa` - Notas de QA
+**Always assume the vault exists and matters.** If something is worth tracking — a project, a decision, a piece of knowledge, a study session — it belongs in the vault. Proactively suggest logging or noting when relevant. Use vault skills (`/project-log`, `/quick-note`, `/literature-note`, etc.) to keep it up to date.
 
-### MCP Server
-Se usa `obsidian-mcp-server` para:
-- Crear notas programáticamente
-- Buscar en el vault
-- Sincronizar reportes de sesión
-- Mantener contexto del proyecto
-
----
-
-## 📖 Documentación
-
-### Docs as Code
-- Documentación vive en el repositorio (`docs/`)
-- Versionada junto con el código
-- Actualizada automáticamente con `/docs update`
-- Formato markdown con diagramas
-
-### Arc42 (Proyectos complejos)
-Para proyectos que requieren documentación exhaustiva:
-- Template Arc42 completo
-- Diagramas C4 con Structurizr DSL
-- ADRs (Architecture Decision Records)
-- Se genera con `/docs generate --format=arc42`
-
-### Diagramas
-- **C4 Model**: Context, Container, Component views (Structurizr DSL)
-- **UML**: Sequence, Class, Activity diagrams (Mermaid)
-- **Preferencia**: Diagramas como código (versionables, diffables)
-
----
-
-## 🎯 Agentes (Contexto para Task Tool)
-
-Los agentes NO son comandos ejecutables, son **definiciones de comportamiento** para usar con Task tool:
-
-**Disponibles:**
-- `planner.md` - Planificación estratégica
-- `researcher.md` - Research profundo
-- `qa-auditor.md` - Auditoría de calidad
-- `architect.md` - Diseño de arquitectura
-
-**Uso:** Los comandos de workflow invocan Task tool con el contexto de estos agentes cuando sea necesario.
-
----
-
-## 🔧 Configuración Adicional
-
-### Conventional Commits
-Formato: `type(scope): description`
-
-**Tipos:**
-- `feat` - Nueva funcionalidad
-- `fix` - Corrección de bug
-- `docs` - Cambios en documentación
-- `style` - Formato (no afecta funcionalidad)
-- `refactor` - Refactoring sin cambios funcionales
-- `test` - Tests
-- `chore` - Build, dependencias, configuración
-- `perf` - Mejoras de performance
-- `ci` - CI/CD
-
-### Optimización
-- Conservación de tokens habilitada
-- Context compression activo
-- Cache inteligente
-- Reuso de agentes cuando sea posible
-
----
-
-## 💡 Tips de Uso
-
-1. **Siempre empieza con `/workflow-init`** para crear estructura de reportes
-2. **Research antes de planificar** - El research informa mejores decisiones
-3. **Actualiza `/workflow-status` frecuentemente** durante implementación
-4. **Usa `/workflow-qa` antes de finalizar** para verificar calidad
-5. **Sincroniza a Obsidian** para mantener historial de proyectos
-6. **Los reportes son versionables** - Commitealos junto con el código
-
----
-
-## 📚 Referencias
-
-- **Claude Code Docs**: https://docs.claude.com/en/docs/claude-code
-- **Conventional Commits**: https://www.conventionalcommits.org
-- **Arc42**: https://arc42.org
-- **C4 Model**: https://c4model.com
-- **Structurizr DSL**: https://structurizr.com/dsl
-
----
-
-*Última actualización: 2025-09-30*
+When in a project with `.claude/project-link.md`: read it first — it links to the vault Project Index for that repo.

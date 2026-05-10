@@ -1,115 +1,81 @@
-# refine-notes — Note Refinement & Atomic Extraction
+---
+name: refine-notes
+description: Interactive session to extract atomic and molecule notes from an existing note. Trigger on /refine-notes or "refine this note", "extract atomic notes from X", "work this note".
+---
 
-Usá este skill cuando el usuario invoque `/refine-notes` o diga algo como "refinemos esta nota", "trabajemos esta nota", "saquemos atomic notes de X", "pulidemos las notas de X".
+# refine-notes
 
-## Vault Path
-
+## Vault
 `/home/pablo/Dropbox/Aplicaciones/remotely-save/personal-vault/`
 
-## Tipos de notas
+## Note types
+- **Atomic** — one concept, short, one atomic = one idea
+- **Molecule** — groups multiple atomic notes; synthesis lives here, detail in the atomics
 
-**Atomic note** — Un único concepto puntual. Corta y breve. Una atomic = un concepto.
+## Protocol
 
-**Molecule note** — Agrupa varias atomic notes como "hijas". Representa un proceso, conjunto temático, o idea mayor que solo tiene sentido cuando se conectan varios conceptos. La síntesis vive en la molecule, el detalle en las atomic notes.
+### 1. Identify note to work
+- If path/name provided → read it directly
+- If not → ask: "Which note do you want to work on?"
 
-## Protocolo
+### 2. Silent analysis
+Before responding, identify internally:
+- Atomic note candidates (single concepts)
+- Molecule note candidates (groups of atomics)
+- Errors or imprecisions
+- Related notes already in vault (search Archive/, Projects/)
+- Unanswered questions in the source note
 
-### Paso 1 — Identificar la nota a trabajar
-
-Si el usuario invocó el skill con un path o nombre de nota, usalo directamente y saltá al Paso 2.
-
-Si no hay path, leé `Area/Core.md` y buscá la sección `## 📖 Current Study Session`.
-- Si existe y tiene items pendientes → preguntá: "¿Continuamos con [nota/item del Current Study Session] o querés trabajar una nota nueva?"
-- Si no existe o está vacía → preguntá: "¿Qué nota querés trabajar hoy?"
-
-Leé la nota elegida con Read tool.
-
-### Paso 2 — Análisis silencioso (no mostrar aún)
-
-Antes de responder, analizá internamente:
-
-1. **Candidatos a atomic notes** — conceptos puntuales individuales
-2. **Candidatos a molecule notes** — grupos de atomic notes que juntas forman un proceso o conjunto con identidad propia
-3. **Errores o imprecisiones** — algo mal anotado, definición incorrecta, confusión entre conceptos
-4. **Notas relacionadas existentes** — buscá en `Archive/` y `Projects/` con Grep/Glob
-5. **Preguntas que el usuario dejó anotadas** — si la nota fuente tiene preguntas sin responder, tenerlas presentes
-
-### Paso 3 — Presentar el panorama
-
-Mostrá al usuario:
-
+### 3. Present overview
 ```
-📋 Nota: <nombre>
-Temas que cubre: <lista breve>
+📋 Note: <name>
+Topics: <brief list>
 
-🔬 Candidatos a atomic notes:
-- <concepto 1>
-- <concepto 2>
-- ...
+🔬 Atomic candidates:
+- <concept 1>
+- <concept 2>
 
-🔗 Candidatos a molecule notes:
-- <nombre del conjunto> → agrupa: <concepto A>, <concepto B>, <concepto C>
+🔗 Molecule candidates:
+- <name> → groups: <A>, <B>, <C>
 
-⚠️ Posibles errores o imprecisiones:
-- <si hay algo, mencionarlo brevemente>
+⚠️ Possible errors:
+- <if any>
 
-🔍 Notas relacionadas ya en el vault:
-- [[<nota>]] — <por qué está relacionada>
+🔍 Related notes in vault:
+- [[<note>]] — <why related>
 ```
+Ask: "Where do we start?"
 
-Luego preguntá: "¿Por dónde arrancamos?"
+### 4. Work each note conversationally (one at a time)
 
-### Paso 4 — Trabajar cada nota de forma conversacional
+**a. Feynman first** — "How would you explain `<concept>` in your own words?"
 
-Por cada atomic/molecule note, seguí este flujo **de a una**:
+**b. Questions** — "Any questions about this concept you want to keep on record?"
+- These are questions the user had during study — they may or may not have the answer
+- Try to answer from source content or vault notes
+- If no answer found, mark as `pending`
+- Questions + answers give context for understanding the concept
 
-#### 4a. Feynman primero
-Preguntá al usuario: "¿Cómo explicarías <concepto> con tus palabras?"
+**c. Evaluate** — based on Feynman explanation and questions, flag errors or suggest improvements. Ask confirmation before continuing.
 
-Esperá su respuesta.
+**d. Draft** — propose full note based on user's words (priority), source content (complement), related notes (for links). Wait for approval or adjustments.
 
-#### 4b. Evaluar la explicación
-- Si hay errores o imprecisiones → señalálos y preguntá si quiere corregirlos antes de continuar
-- Si se puede mejorar → sugerí la mejora y pedí confirmación
-- Si está bien → confirmalo y avanzá
+**e. Destination** — suggest based on topic:
+- Active CS study → `Projects/Computer Science/<folder>/`
+- Processed technical → `Archive/Engineering/`
+- Other → matching folder per vault structure
 
-#### 4c. Preguntas del tema
-Preguntá: "¿Tenés alguna pregunta sobre esto que quieras dejar registrada? ¿Algo que no te quedó del todo claro?"
+**f. Create file**
 
-Si el usuario tiene preguntas, también buscá si hay respuesta en el contenido original o en notas relacionadas, y proponé responderlas en el apartado Questions de la nota.
+**g. Continue?** — "Next candidate or stop here?"
 
-#### 4d. Proponer borrador
-Basándote en:
-- Las palabras del usuario (prioridad máxima)
-- El contenido original de la nota (complemento)
-- Las notas relacionadas encontradas (para linkear)
-- Las preguntas y respuestas del usuario
-
-Proponé el borrador completo. Breve. Sin relleno. Estructura de outline. Esperá aprobación o ajustes.
-
-#### 4e. Definir destino
-Si el usuario no lo dijo antes, preguntá dónde guardarla. Sugerí según el tema:
-- Material de CS activo → `Projects/Computer Science/<carpeta>/`
-- Material técnico procesado → `Archive/Engineering/`
-- Otro tema → la carpeta correspondiente según CLAUDE.md
-
-#### 4f. Crear el archivo
-
-#### 4g. Continuar o terminar
-Preguntá: "¿Seguimos con el próximo candidato o querés parar acá?"
-
-### Paso 5 — Pulir nota original (opcional)
-
-Al final del flujo, ofrecé: "¿Querés que pula la nota original también? (typos, redacción, frontmatter)"
-
-Si acepta, mostrá los cambios propuestos y pedí confirmación antes de editar.
+### 5. Polish source note (optional)
+At the end offer: "Want me to clean up the source note too? (typos, frontmatter, structure)"
+Show proposed changes, ask confirmation before editing.
 
 ---
 
-## Formato de notas a crear
-
-### Atomic Note
-Corta. Un concepto. Estructura de outline. Keywords para active recall.
+## Atomic note format
 
 ```markdown
 ---
@@ -117,47 +83,39 @@ tags:
   - zettelkasten/permanent/atomic
   - <domain-tag>
   - status/pending
-created: <YYYY-MM-DD>
-modified: <YYYY-MM-DD>
+created: YYYY-MM-DD
+modified: YYYY-MM-DD
 sources:
-  - <URL o [[nota origen]] si aplica, sino []>
+  - <[[source note]] or URL>
 related:
-  - <[[notas relacionadas encontradas]]>
+  - <[[related notes]]>
 aliases: []
 keywords:
-  - <palabra clave 1 que dispare el recuerdo del concepto>
-  - <palabra clave 2>
-  - <agregar las que sean necesarias>
+  - <active recall trigger>
 ---
 
-## 🧠 <Título del concepto>
+## 🧠 <Concept title>
 
 > [!info] Main idea
-> <Escrita AL FINAL. Una oración — la esencia del concepto en palabras del usuario.>
+> <Written LAST. One sentence — the essence in user's words.>
 
 > [!question] Questions
-> <Preguntas que surgieron mientras se tomaba la nota, con sus respuestas si las hay.>
-> Q: <pregunta>
-> A: <respuesta, o "pending" si no se resolvió>
+> Q: <question>
+> A: <answer or "pending">
 
 ## 📌 Data
-<Contenido en palabras del usuario. Outline jerárquico — usá numeración o bullets con indentación para reflejar la estructura del concepto. Breve y puntual.>
-1. <punto principal>
-   - <subpunto si aplica>
-   - <subpunto>
-2. <otro punto principal>
+1. <main point>
+   - <subpoint>
+2. <main point>
 
 ---
 ##### 🧪 Practice
-**Question:**
-<Pregunta de active recall — basada en keywords o en la main idea>
+**Question:** <active recall question>
 ?
-**Answer:**
-<Respuesta>
+**Answer:** <answer>
 ```
 
-### Molecule Note
-Síntesis del conjunto. El detalle vive en las atomic notes hijas. Outline para organizar los temas.
+## Molecule note format
 
 ```markdown
 ---
@@ -165,61 +123,50 @@ tags:
   - zettelkasten/permanent/molecule
   - <domain-tag>
   - status/pending
-created: <YYYY-MM-DD>
-modified: <YYYY-MM-DD>
+created: YYYY-MM-DD
+modified: YYYY-MM-DD
 related:
-  - <[[solo otras molecule notes aquí]]>
+  - <[[other molecule notes only]]>
 aliases:
 ---
 
 > [!abstract] Key Points
-> - <punto clave 1>
-> - <punto clave 2>
+> - <key point 1>
+> - <key point 2>
 
 ---
-## 🧠 <Título de la molecule>
+## 🧠 <Molecule title>
 
 > [!info] Core
-> <Una o dos oraciones — qué es este conjunto y por qué tiene sentido agruparlo. Estilo Feynman.>
+> <What this group is and why it makes sense together. Feynman style.>
 
 > [!question] Questions
-> Q: <pregunta sobre el conjunto>
-> A: <respuesta, o "pending">
+> Q: <question>
+> A: <answer or "pending">
 
-### 📌 <Tema 1>
+### 📌 <Topic 1>
 → [[<atomic note>]]
-<Una línea de contexto: qué aporta al conjunto>
+<One line: what it contributes to the group>
 
-### 📌 <Tema 2>
+### 📌 <Topic 2>
 → [[<atomic note>]]
-<Una línea de contexto>
 
 ---
 ## 🧪 Practice
-**Pregunta:**
-?
-**Respuesta:**
+**Question:** ?
+**Answer:**
 ```
 
----
-
-## Reglas
-
-- **Dirigida por el usuario** — él decide qué nota, qué conceptos extraer, en qué orden. No avances sin su dirección.
-- **Una nota a la vez** — nunca generes múltiples notas de golpe. Flujo conversacional por cada una.
-- **Sus palabras primero** — el contenido final debe sonar a él. El original es complemento, no base.
-- **Feynman antes del borrador** — siempre preguntá cómo explicaría el concepto antes de proponer algo.
-- **Atomic = breve** — si la nota se extiende demasiado, hay múltiples conceptos. Separarlos.
-- **Molecule = síntesis de atomic notes** — no tiene contenido extenso propio. Conecta y referencia.
-- **Keywords = active recall** — elegí palabras que disparen el recuerdo del concepto, no solo descriptores genéricos.
-- **Outline siempre** — toda nota usa estructura jerárquica con numeración o bullets indentados.
-- **Questions = preguntas reales** — anotá las preguntas que el usuario haga durante la sesión y respondelas si es posible. Si no, marcalas como "pending".
-- **Corrección honesta** — si algo está mal anotado, señalalo. No lo ignores.
-- **No forzar fleeting** — crear directo como atomic o molecule si el contenido lo justifica.
-- **Idioma de la nota** — seguí el idioma en que el usuario responda (inglés → inglés, español → español).
-- **Links inline vs related** — si una nota se menciona en el texto, el link va inline `[[Nota]]`. El campo `related` es para notas relacionadas que no se mencionan en el cuerpo. Siempre dejar `related` presente en el frontmatter, vacío `[]` si no aplica.
-- **Buscar relacionadas siempre** — antes de crear cualquier nota, buscá en el vault para identificar qué notas linkear (inline o en related). Incluí aliases en la búsqueda (Grep en frontmatter `aliases:`).
-- **Aliases en notas nuevas** — al proponer el borrador, sugerí aliases candidatos de forma interactiva: plural, singular, abreviaciones, variantes de capitalización, sinónimos comunes. El usuario confirma cuáles incluir antes de crear el archivo.
-- **Sources** — solo el nombre de la nota: `[[Nombre]]`, sin path completo.
-- **No inventar contenido** — si el usuario no explicó algo, preguntá.
-- **Nombre de archivo siempre en inglés** — independientemente del idioma del contenido de la nota.
+## Rules
+- User directs — they decide what to extract and in what order
+- One note at a time — never generate multiple notes at once
+- User's words first — source is complement, not base
+- Feynman before draft — always ask how they'd explain it first
+- Atomic = brief — if it's getting long, there are multiple concepts, split them
+- Molecule = synthesis — no extensive content of its own, just connects atomics
+- Keywords = active recall triggers, not generic descriptors
+- Flag errors honestly — don't ignore imprecisions
+- Filename always in English
+- `related` field: links not mentioned in the body. Always present, empty `[]` if none
+- Search vault for related notes before creating (include `aliases:` in search)
+- Suggest aliases interactively before creating the file
