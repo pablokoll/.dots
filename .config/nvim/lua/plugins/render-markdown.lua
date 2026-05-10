@@ -127,27 +127,6 @@ return {
 
     render_markdown.setup(opts)
 
-    -- Configurar highlights personalizados
-    vim.api.nvim_create_autocmd("ColorScheme", {
-      pattern = "*",
-      callback = function()
-        -- Checkbox marcado en verde brillante
-        vim.api.nvim_set_hl(0, "RenderMarkdownChecked", { fg = "#10b981", bold = true })
-        -- Checkbox desmarcado en gris
-        vim.api.nvim_set_hl(0, "RenderMarkdownUnchecked", { fg = "#6b7280" })
-        -- Highlight (==texto==) en amarillo suave
-        vim.api.nvim_set_hl(0, "RenderMarkdownInlineHighlight", { bg = "#fef3c7", fg = "#92400e" }) -- Amarillo suavecito
-        vim.api.nvim_set_hl(0, "@markup.highlight", { bg = "#fef3c7", fg = "#92400e" })
-        vim.api.nvim_set_hl(0, "@text.emphasis", { bg = "#fef3c7", fg = "#92400e" })
-      end,
-    })
-
-    -- Aplicar highlights inmediatamente
-    vim.api.nvim_set_hl(0, "RenderMarkdownChecked", { fg = "#10b981", bold = true })
-    vim.api.nvim_set_hl(0, "RenderMarkdownUnchecked", { fg = "#6b7280" })
-    vim.api.nvim_set_hl(0, "RenderMarkdownInlineHighlight", { bg = "#fef3c7", fg = "#92400e" })
-    vim.api.nvim_set_hl(0, "@markup.highlight", { bg = "#fef3c7", fg = "#92400e" })
-    vim.api.nvim_set_hl(0, "@text.emphasis", { bg = "#fef3c7", fg = "#92400e" })
 
     -- Configurar folding por indentación en archivos markdown
     vim.api.nvim_create_autocmd("FileType", {

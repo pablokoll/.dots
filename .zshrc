@@ -202,3 +202,9 @@ export PATH="$BUN_INSTALL/bin:$PATH"
 
 alias claude-mem='/home/pablo/.bun/bin/bun "/home/pablo/.claude/plugins/cache/thedotmack/claude-mem/12.2.0/scripts/worker-service.cjs"'
 alias dots="git --git-dir=$HOME/Work/personal/.dots --work-tree=$HOME"
+
+# The next line updates PATH for the Google Cloud SDK.
+if [ -f '/home/pablo/google-cloud-sdk/path.zsh.inc' ]; then . '/home/pablo/google-cloud-sdk/path.zsh.inc'; fi
+
+# The next line enables shell command completion for gcloud.
+if [ -f '/home/pablo/google-cloud-sdk/completion.zsh.inc' ]; then . '/home/pablo/google-cloud-sdk/completion.zsh.inc'; fi
