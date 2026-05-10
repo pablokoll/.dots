@@ -39,6 +39,7 @@ Warn if anything potentially sensitive appears (tokens, IPs, passwords).
 | zsh | `~/.zshrc` |
 | starship | `~/.config/starship.toml` |
 | Claude Code | `~/.claude/CLAUDE.md`, `~/.claude/skills/` |
+| Zed | `~/.config/zed/settings.json`, `~/.config/zed/keymap.json`, `~/.config/zed/themes/` |
 | VSCode | `~/.config/Code/User/settings.json`, `keybindings.json`, `snippets/`, `extensions.txt` |
 | SSH (example) | `~/.ssh/config.example` |
 | git | `~/.gitconfig.example` |
