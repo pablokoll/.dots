@@ -12,7 +12,10 @@
   "agent_ui_font_size": 14.0,
   "terminal": {
     "shell": {
-      "program": "zsh"
+      "with_arguments": {
+        "program": "zsh",
+        "args": []
+      }
     },
     "font_weight": 400.0,
     "font_size": 12.0,

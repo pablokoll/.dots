@@ -167,7 +167,7 @@ fi
 
 # Auto-launch tmux with a new anonymous session for each terminal
 # Only if not already inside tmux
-if command -v tmux &> /dev/null && [ -z "$TMUX" ] && [ -z "$VSCODE_INJECTION" ]; then
+if command -v tmux &> /dev/null && [ -z "$TMUX" ] && [ -z "$VSCODE_INJECTION" ] && [ -z "$ZED_TERM" ]; then
   # Create new session without name (tmux will auto-generate: 0, 1, 2, etc.)
   exec tmux new-session
 fi
