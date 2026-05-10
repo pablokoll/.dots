@@ -2,7 +2,7 @@
   "layer": "top",
   "output": "eDP-1",
   "position": "right",
-  "width": 90,
+  "width": 150,
   "spacing": 0,
   "exclusive": true,
   "passthrough": false,

@@ -1,0 +1,84 @@
+[
+  {
+    "context": "ProjectPanel",
+    "bindings": {
+      "space e": "workspace::ToggleLeftDock"
+    }
+  },
+  {
+    "context": "vim_mode == normal",
+    "bindings": {
+      "space space": "file_finder::Toggle",
+      "space v": "pane::SplitRight",
+      "space h": "pane::SplitDown",
+      "shift-h": "pane::ActivatePreviousItem",
+      "shift-l": "pane::ActivateNextItem",
+      "space e": "workspace::ToggleLeftDock",
+      "space b d": "pane::CloseActiveItem",
+      "space b o": "pane::CloseInactiveItems",
+      "space b l": "pane::CloseItemsToTheLeft",
+      "space b r": "pane::CloseItemsToTheRight",
+      "space /": "buffer_search::Deploy",
+      "space ?": "project_search::ToggleFocus",
+      "space s": "outline::Toggle",
+      "space S": "project_symbols::Toggle",
+      "space a": "editor::ToggleCodeActions",
+      "space R": "editor::Rename",
+      "space F": "editor::Format",
+      "space i": "editor::GoToImplementation",
+      "space t": "editor::GoToTypeDefinition",
+      "space x": "diagnostics::Deploy",
+      "space g": "git_panel::ToggleFocus"
+    }
+  },
+  {
+    "bindings": {
+      "ctrl-p": "file_finder::Toggle",
+      "shift-h": "pane::ActivatePreviousItem",
+      "shift-l": "pane::ActivateNextItem",
+      "alt-t": "terminal_panel::Toggle",
+      "alt-d": "debug_panel::ToggleFocus",
+      "alt-p": "diagnostics::Deploy",
+      "ctrl-h": "workspace::ActivatePaneLeft",
+      "ctrl-l": "workspace::ActivatePaneRight",
+      "ctrl-k": "workspace::ActivatePaneUp",
+      "ctrl-j": "workspace::ActivatePaneDown"
+    }
+  },
+  {
+    "context": "Editor",
+    "unbind": {
+      "alt-shift-a": "editor::ToggleBlockComments"
+    }
+  },
+  {
+    "context": "menu",
+    "bindings": {
+      "ctrl-j": "menu::SelectNext",
+      "ctrl-k": "menu::SelectPrevious"
+    }
+  },
+  {
+    "context": "Editor && (showing_code_actions || showing_completions)",
+    "bindings": {
+      "ctrl-j": "editor::ContextMenuNext",
+      "ctrl-k": "editor::ContextMenuPrevious"
+    }
+  },
+  {
+    "context": "AgentPanel > Editor",
+    "bindings": {
+      "ctrl-d": "agent::ScrollOutputPageDown",
+      "ctrl-u": "agent::ScrollOutputPageUp",
+      "ctrl-e": "agent::ScrollOutputLineDown",
+      "ctrl-y": "agent::ScrollOutputLineUp"
+    }
+  },
+  {
+    "context": "GitPanel && ChangesList",
+    "bindings": {
+      "ctrl-j": "git_panel::NextEntry",
+      "ctrl-k": "git_panel::PreviousEntry"
+    }
+  }
+]

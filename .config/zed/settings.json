@@ -1,0 +1,70 @@
+// Zed settings
+//
+// For information on how to configure Zed, see the Zed
+// documentation: https://zed.dev/docs/configuring-zed
+//
+// To see all of Zed's default settings without changing your
+// custom settings, run `zed: open default settings` from the
+// command palette (cmd-shift-p / ctrl-shift-p)
+{
+  "outline_panel": {
+    "dock": "right"
+  },
+  "agent": {
+    "default_model": {
+      "provider": "google",
+      "model": "gemini-2.5-flash",
+      "enable_thinking": true
+    },
+    "sidebar_side": "right",
+    "dock": "right",
+    "favorite_models": [],
+    "model_parameters": []
+  },
+  "diff_view_style": "unified",
+  "git_panel": {
+    "dock": "left",
+    "tree_view": true
+  },
+  "project_panel": {
+    "dock": "left",
+    "show_hidden_files": true
+  },
+  "proxy": "",
+  "agent_servers": {
+    "gemini": {
+      "type": "registry"
+    },
+    "codex-acp": {
+      "type": "registry"
+    },
+    "github-copilot-cli": {
+      "type": "registry"
+    },
+    "claude-acp": {
+      "favorite_config_option_values": {
+        "model": [
+          "default"
+        ]
+      },
+      "type": "registry"
+    }
+  },
+  "minimap": {
+    "show": "never"
+  },
+  "vim_mode": true,
+  "base_keymap": "VSCode",
+  "icon_theme": {
+    "mode": "system",
+    "light": "Zed (Default)",
+    "dark": "Catppuccin Mocha"
+  },
+  "ui_font_size": 16,
+  "buffer_font_size": 15,
+  "theme": {
+    "mode": "system",
+    "light": "One Light",
+    "dark": "Catppuccin Mocha",
+  },
+}

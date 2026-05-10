@@ -1,12 +1,8 @@
 @import "../omarchy/current/theme/waybar.css";
-
-* {
-  all: unset;
-
-}
+@import "style.css";
 
 window#waybar {
-  background-color: @background;
   border: none;
   border-radius: 0;
+  margin-right: 0;
 }
