@@ -7,7 +7,7 @@ if pgrep -f "waybar.*gap-bar.jsonc" > /dev/null; then
     pkill -f "waybar.*gap-bar.jsonc"
     echo "/* gap-bar inactive — managed by toggle-gap-bar script */" > "$GAP_BAR_CSS"
 else
-    waybar -c ~/.config/waybar/gap-bar.jsonc -s ~/.config/waybar/gap-bar.css &
+    waybar -c ~/.config/waybar/gap-bar.jsonc -s ~/.config/waybar/gap-bar.css &disown
     cat > "$GAP_BAR_CSS" << EOF
 /* gap-bar active — managed by toggle-gap-bar script */
 window#waybar.eDP-1 {
@@ -16,5 +16,11 @@ window#waybar.eDP-1 {
 EOF
 fi
 
-# Force top bar style reload
-pkill -SIGUSR2 -f "^/usr/bin/waybar$" 2>/dev/null || pkill -SIGUSR2 waybar 2>/dev/null
+# Ensure top bar is running
+if ! pgrep -f "waybar.*config.jsonc" > /dev/null; then
+    waybar -c ~/.config/waybar/config.jsonc -s ~/.config/waybar/style.css &disown
+    sleep 0.5
+fi
+
+# Reload styles on top bar only
+pkill -SIGUSR2 -f "waybar.*config.jsonc"
