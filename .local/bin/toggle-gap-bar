@@ -10,17 +10,13 @@ else
     waybar -c ~/.config/waybar/gap-bar.jsonc -s ~/.config/waybar/gap-bar.css &disown
     cat > "$GAP_BAR_CSS" << EOF
 /* gap-bar active — managed by toggle-gap-bar script */
-window#waybar.eDP-1 {
+window#waybar {
   margin-right: ${GAP_BAR_WIDTH}px;
 }
 EOF
 fi
 
-# Ensure top bar is running
-if ! pgrep -f "waybar.*config.jsonc" > /dev/null; then
-    waybar -c ~/.config/waybar/config.jsonc -s ~/.config/waybar/style.css &disown
-    sleep 0.5
-fi
-
-# Reload styles on top bar only
-pkill -SIGUSR2 -f "waybar.*config.jsonc"
+# Restart top bar to pick up new styles
+pkill -f "^/usr/bin/waybar$" 2>/dev/null
+sleep 0.3
+uwsm-app -- waybar &disown

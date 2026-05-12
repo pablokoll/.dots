@@ -30,10 +30,10 @@ Bidirectional sync between daily notes and `Area/Core.md`:
 
 > Updated: YYYY-MM-DD HH:MM
 
-### YYYY-MM-DD
+### [[YYYY-MM-DD]]
 - [ ] <task>
 
-### YYYY-MM-DD
+### [[YYYY-MM-DD]]
 - [ ] <task>
 ```
 

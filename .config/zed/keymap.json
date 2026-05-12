@@ -2,11 +2,25 @@
   {
     "context": "ProjectPanel",
     "bindings": {
-      "space e": "workspace::ToggleLeftDock"
+      "space e": "workspace::ToggleLeftDock",
+      "space g": "git_panel::ToggleFocus"
     }
   },
   {
-    "context": "vim_mode == normal",
+    "context": "GitPanel",
+    "bindings": {
+      "space e": "project_panel::ToggleFocus",
+      "space g": "workspace::ToggleLeftDock"
+    }
+  },
+  {
+    "context": "Pane",
+    "bindings": {
+      "space ?": "project_search::ToggleFocus"
+    }
+  },
+  {
+    "context": "Editor && VimControl && vim_mode == normal",
     "bindings": {
       "space space": "file_finder::Toggle",
       "space v": "pane::SplitRight",
@@ -19,7 +33,6 @@
       "space b l": "pane::CloseItemsToTheLeft",
       "space b r": "pane::CloseItemsToTheRight",
       "space /": "buffer_search::Deploy",
-      "space ?": "project_search::ToggleFocus",
       "space s": "outline::Toggle",
       "space S": "project_symbols::Toggle",
       "space a": "editor::ToggleCodeActions",
@@ -28,7 +41,9 @@
       "space i": "editor::GoToImplementation",
       "space t": "editor::GoToTypeDefinition",
       "space x": "diagnostics::Deploy",
-      "space g": "git_panel::ToggleFocus"
+      "space g": "git_panel::ToggleFocus",
+      "space G": "git_graph::Open",
+      "space c": "workspace::ToggleRightDock"
     }
   },
   {
@@ -37,12 +52,34 @@
       "shift-h": "pane::ActivatePreviousItem",
       "shift-l": "pane::ActivateNextItem",
       "alt-t": "terminal_panel::Toggle",
+      "alt-g": ["task::Spawn", { "task_name": "lazygit", "reveal_target": "center" }],
       "alt-d": "debug_panel::ToggleFocus",
       "alt-p": "diagnostics::Deploy",
       "ctrl-h": "workspace::ActivatePaneLeft",
       "ctrl-l": "workspace::ActivatePaneRight",
       "ctrl-k": "workspace::ActivatePaneUp",
       "ctrl-j": "workspace::ActivatePaneDown"
+    }
+  },
+  {
+    "context": "GitPanel && CommitEditor",
+    "bindings": {
+      "space": ["editor::HandleInput", " "]
+    }
+  },
+  {
+    "context": "Editor",
+    "bindings": {
+      "alt-j": "editor::MoveLineDown",
+      "alt-k": "editor::MoveLineUp"
+    }
+  },
+  {
+    "context": "Editor && vim_mode == insert",
+    "bindings": {
+      "space": ["editor::HandleInput", " "],
+      "shift-h": ["editor::HandleInput", "H"],
+      "shift-l": ["editor::HandleInput", "L"]
     }
   },
   {
@@ -79,6 +116,30 @@
     "bindings": {
       "ctrl-j": "git_panel::NextEntry",
       "ctrl-k": "git_panel::PreviousEntry"
+    }
+  },
+  {
+    "context": "(vim_mode == helix_normal || vim_mode == helix_select) && !menu",
+    "unbind": {
+      "space c": "editor::ToggleComments"
+    }
+  },
+  {
+    "context": "Pane",
+    "unbind": {
+      "ctrl-shift-f": "project_search::ToggleFocus"
+    }
+  },
+  {
+    "context": "Pane",
+    "bindings": {
+      "ctrl-shift-f": "search::FocusSearch"
+    }
+  },
+  {
+    "context": "ProjectSearchBar",
+    "unbind": {
+      "ctrl-shift-f": "search::FocusSearch"
     }
   }
 ]

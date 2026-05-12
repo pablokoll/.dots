@@ -7,6 +7,17 @@
 // custom settings, run `zed: open default settings` from the
 // command palette (cmd-shift-p / ctrl-shift-p)
 {
+  "git": {
+    "inline_blame": {
+      "padding": 6,
+    },
+  },
+  "search": {
+    "center_on_match": false,
+  },
+  "file_finder": {
+    "modal_max_width": "small",
+  },
   "ui_font_family": ".ZedSans",
   "agent_buffer_font_size": 12.0,
   "agent_ui_font_size": 14.0,
@@ -14,35 +25,42 @@
     "shell": {
       "with_arguments": {
         "program": "zsh",
-        "args": []
-      }
+        "args": [],
+      },
+    },
+    "env": {
+      "PATH": "/home/pablo/.local/share/mise/shims:/usr/local/bin:/usr/bin:/bin",
     },
     "font_weight": 400.0,
     "font_size": 12.0,
-    "show_count_badge": true
+    "show_count_badge": true,
   },
   "cli_default_open_behavior": "existing_window",
   "outline_panel": {
     "indent_size": 12.0,
-    "dock": "right"
+    "dock": "right",
   },
   "agent": {
     "default_width": 420.0,
     "default_model": {
       "provider": "google",
       "model": "gemini-2.5-flash",
-      "enable_thinking": true
+      "enable_thinking": true,
     },
     "sidebar_side": "right",
     "dock": "right",
     "favorite_models": [],
-    "model_parameters": []
+    "model_parameters": [],
   },
   "diff_view_style": "unified",
   "git_panel": {
+    "show_count_badge": true,
+    "file_icons": true,
+    "fallback_branch_name": "main",
+    "status_style": "label_color",
     "default_width": 240.0,
     "dock": "left",
-    "tree_view": true
+    "tree_view": true,
   },
   "project_panel": {
     "sticky_scroll": true,
@@ -53,39 +71,43 @@
     "hide_gitignore": false,
     "default_width": 200.0,
     "dock": "left",
-    "show_hidden_files": true
+    "show_hidden_files": true,
   },
   "proxy": "",
   "agent_servers": {
-    "gemini": {
+    "claude-acp": {
       "type": "registry"
+    },
+    "gemini": {
+      "type": "registry",
     },
     "codex-acp": {
-      "type": "registry"
+      "type": "registry",
     },
     "github-copilot-cli": {
-      "type": "registry"
+      "type": "registry",
     },
-    "claude-acp": {
-      "favorite_config_option_values": {
-        "model": [
-          "default"
-        ]
-      },
-      "type": "registry"
-    }
   },
+  "file_scan_exclusions": [
+    "**/.git",
+    "**/node_modules",
+    "**/target",
+    "**/.next",
+    "**/dist",
+    "**/.cache",
+    "**/.turbo",
+  ],
   "minimap": {
-    "show": "never"
+    "show": "never",
   },
   "vim_mode": true,
   "base_keymap": "VSCode",
   "icon_theme": {
     "mode": "system",
-    "light": "Zed (Default)",
-    "dark": "Catppuccin Mocha"
+    "light": "Catppuccin Macchiato",
+    "dark": "Material Icon Theme",
   },
-  "ui_font_size": 15.0,
+  "ui_font_size": 14.0,
   "buffer_font_size": 12.0,
   "theme": {
     "mode": "system",

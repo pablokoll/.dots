@@ -10,12 +10,14 @@
   ],
   "modules-center": [
     "clock",
+    "custom/weather",
     "custom/update",
     "custom/voxtype",
     "custom/screenrecording-indicator"
   ],
   "modules-right": [
     "group/tray-expander",
+    "custom/reminder-indicator",
     "bluetooth",
     "network",
     "pulseaudio",
@@ -92,6 +94,13 @@
       "on-scroll-up": "shift_up",
       "on-scroll-down": "shift_down"
     }
+  },
+  "custom/weather": {
+    "exec": "$OMARCHY_PATH/default/waybar/weather.sh",
+    "return-type": "json",
+    "interval": 60,
+    "tooltip": false,
+    "on-click": "notify-send -u low \"$(omarchy-weather-status)\""
   },
   "network": {
     "format-icons": [
@@ -190,6 +199,13 @@
       "custom/expand-icon",
       "tray"
     ]
+  },
+  "custom/reminder-indicator": {
+    "exec": "~/.config/omarchy/bin/waybar-reminder-indicator.sh",
+    "return-type": "json",
+    "interval": 10,
+    "on-click": "~/.config/omarchy/bin/waybar-reminder-click.sh",
+    "on-click-right": "omarchy reminder clear"
   },
   "custom/expand-icon": {
     "format": "",
