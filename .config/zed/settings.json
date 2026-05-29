@@ -22,12 +22,7 @@
   "agent_buffer_font_size": 12.0,
   "agent_ui_font_size": 14.0,
   "terminal": {
-    "shell": {
-      "with_arguments": {
-        "program": "zsh",
-        "args": [],
-      },
-    },
+    "shell": "system",
     "env": {
       "PATH": "/home/pablo/.local/share/mise/shims:/usr/local/bin:/usr/bin:/bin",
     },
@@ -99,6 +94,12 @@
   ],
   "minimap": {
     "show": "never",
+  },
+  "soft_wrap": "editor_width",
+  "scrollbar": {
+    "axes": {
+      "horizontal": false,
+    },
   },
   "vim_mode": true,
   "base_keymap": "VSCode",
