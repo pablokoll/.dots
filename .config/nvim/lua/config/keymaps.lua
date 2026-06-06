@@ -2,6 +2,9 @@
 -- Default keymaps that are always set: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/keymaps.lua
 -- Add any additional keymaps here
 
+-- Ctrl+P: file finder (alias for <space><space>)
+vim.keymap.set("n", "<C-p>", function() Snacks.picker.files() end, { desc = "Find Files (Ctrl+P)" })
+
 -- Terminal mode: salir con Esc fácilmente
 vim.keymap.set("t", "<Esc><Esc>", "<C-\\><C-n>", { desc = "Exit terminal mode" })
 

@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "WebFetch(domain:www.lazyvim.org)",
+      "WebFetch(domain:lazy.folke.io)",
+      "Bash(find:*)",
+      "Bash(hyprctl getoption:*)",
+      "Bash(xargs ls:*)",
+      "Bash(rg --files:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

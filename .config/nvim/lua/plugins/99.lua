@@ -4,6 +4,7 @@
 
 return {
   "ThePrimeagen/99",
+  enabled = false,
   dependencies = {
     "saghen/blink.cmp",
     { "saghen/blink.compat", version = "2.*" },

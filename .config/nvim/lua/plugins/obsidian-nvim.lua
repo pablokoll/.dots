@@ -344,193 +344,193 @@ return {
         })
 
         -- Autocommand para limpiar frontmatters duplicados, actualizar modified y reordenar
-        vim.api.nvim_create_autocmd("BufWritePre", {
-          buffer = 0,
-          callback = function()
-            local bufnr = vim.api.nvim_get_current_buf()
-            
-            -- Verificar que el buffer es modificable
-            if not vim.bo[bufnr].modifiable then
-              return
-            end
-            
-            local lines = vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)
-
-            -- Verificar que el archivo comienza con frontmatter (---)
-            if lines[1] ~= "---" then
-              return
-            end
-
-            -- Encontrar todos los frontmatters
-            local frontmatters = {}
-            local i = 1
-            
-            while i <= #lines do
-              if lines[i] == "---" then
-                local fm_start = i
-                local fm_end = nil
-                
-                for j = i + 1, #lines do
-                  if lines[j] == "---" then
-                    fm_end = j
-                    break
-                  end
-                end
-                
-                if fm_end then
-                  table.insert(frontmatters, { start_line = fm_start, end_line = fm_end })
-                  i = fm_end + 1
-                else
-                  break
-                end
-              else
-                break
-              end
-            end
-
-            if #frontmatters == 0 then
-              return
-            end
-
-            local new_timestamp = os.date("!%Y-%m-%dT%H:%M:%S") .. "+01:00"
-            
-            -- Usar solo el último frontmatter (el del template si se insertó uno)
-            local last_fm = frontmatters[#frontmatters]
-            
-            -- Parsear el frontmatter
-            local function parse_frontmatter(start_line, end_line)
-              local fm = {}
-              local current_key = nil
-              local in_multiline = false
-              
-              for line_idx = start_line + 1, end_line - 1 do
-                local line = lines[line_idx]
-                local list_match = line:match("^(%w+):%s*$")
-                
-                if list_match then
-                  current_key = list_match
-                  fm[current_key] = {}
-                  in_multiline = true
-                elseif in_multiline and line:match("^%s*-%s") then
-                  local item = line:match("^%s*-%s*(.*)$")
-                  table.insert(fm[current_key], item)
-                elseif line:match("^(%w+):%s*(.+)$") then
-                  local key, value = line:match("^(%w+):%s*(.+)$")
-                  fm[key] = value
-                  current_key = nil
-                  in_multiline = false
-                elseif line:match("^%w+:") then
-                  local key = line:match("^(%w+):")
-                  fm[key] = ""
-                  current_key = nil
-                  in_multiline = false
-                else
-                  current_key = nil
-                  in_multiline = false
-                end
-              end
-              
-              return fm
-            end
-            
-            local frontmatter = parse_frontmatter(last_fm.start_line, last_fm.end_line)
-            
-            -- Actualizar modified y created
-            frontmatter.modified = new_timestamp
-            if not frontmatter.created then
-              frontmatter.created = new_timestamp
-            end
-
-            -- Reordenar frontmatter
-            local ordered_keys = { "id", "tags", "aliases", "sources", "related", "keywords", "created", "modified" }
-            local new_frontmatter = { "---" }
-
-            local function format_value(key, value)
-              if type(value) == "table" then
-                if #value == 0 then
-                  return key .. ": []"
-                else
-                  local result = { key .. ":" }
-                  for _, item in ipairs(value) do
-                    table.insert(result, "  - " .. item)
-                  end
-                  return result
-                end
-              else
-                return key .. ": " .. tostring(value)
-              end
-            end
-
-            for _, key in ipairs(ordered_keys) do
-              if frontmatter[key] ~= nil then
-                local formatted = format_value(key, frontmatter[key])
-                if type(formatted) == "table" then
-                  for _, line in ipairs(formatted) do
-                    table.insert(new_frontmatter, line)
-                  end
-                else
-                  table.insert(new_frontmatter, formatted)
-                end
-                frontmatter[key] = nil
-              end
-            end
-
-            -- Campos extras alfabéticamente
-            local extra_keys = {}
-            for key, _ in pairs(frontmatter) do
-              table.insert(extra_keys, key)
-            end
-            table.sort(extra_keys)
-
-            for _, key in ipairs(extra_keys) do
-              local formatted = format_value(key, frontmatter[key])
-              if type(formatted) == "table" then
-                for _, line in ipairs(formatted) do
-                  table.insert(new_frontmatter, line)
-                end
-              else
-                table.insert(new_frontmatter, formatted)
-              end
-            end
-
-            table.insert(new_frontmatter, "---")
-
-            -- Obtener contenido después del último frontmatter
-            local content_lines = {}
-            local found_content = false
-            
-            for idx = last_fm.end_line + 1, #lines do
-              if not found_content and lines[idx]:match("^%s*$") then
-                goto continue
-              end
-              found_content = true
-              table.insert(content_lines, lines[idx])
-              ::continue::
-            end
-
-            -- Reconstruir buffer
-            local final_lines = {}
-            for _, line in ipairs(new_frontmatter) do
-              table.insert(final_lines, line)
-            end
-            
-            if #content_lines > 0 then
-              table.insert(final_lines, "")
-              for _, line in ipairs(content_lines) do
-                table.insert(final_lines, line)
-              end
-            end
-
-            -- Reemplazar buffer
-            local ok, err = pcall(function()
-              vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, final_lines)
-            end)
-            
-            if not ok then
-              vim.notify("Error updating frontmatter: " .. tostring(err), vim.log.levels.WARN)
-            end
-          end,
-        })
+--         vim.api.nvim_create_autocmd("BufWritePre", {
+--           buffer = 0,
+--           callback = function()
+--             local bufnr = vim.api.nvim_get_current_buf()
+--             
+--             -- Verificar que el buffer es modificable
+--             if not vim.bo[bufnr].modifiable then
+--               return
+--             end
+--             
+--             local lines = vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)
+-- 
+--             -- Verificar que el archivo comienza con frontmatter (---)
+--             if lines[1] ~= "---" then
+--               return
+--             end
+-- 
+--             -- Encontrar todos los frontmatters
+--             local frontmatters = {}
+--             local i = 1
+--             
+--             while i <= #lines do
+--               if lines[i] == "---" then
+--                 local fm_start = i
+--                 local fm_end = nil
+--                 
+--                 for j = i + 1, #lines do
+--                   if lines[j] == "---" then
+--                     fm_end = j
+--                     break
+--                   end
+--                 end
+--                 
+--                 if fm_end then
+--                   table.insert(frontmatters, { start_line = fm_start, end_line = fm_end })
+--                   i = fm_end + 1
+--                 else
+--                   break
+--                 end
+--               else
+--                 break
+--               end
+--             end
+-- 
+--             if #frontmatters == 0 then
+--               return
+--             end
+-- 
+--             local new_timestamp = os.date("!%Y-%m-%dT%H:%M:%S") .. "+01:00"
+--             
+--             -- Usar solo el último frontmatter (el del template si se insertó uno)
+--             local last_fm = frontmatters[#frontmatters]
+--             
+--             -- Parsear el frontmatter
+--             local function parse_frontmatter(start_line, end_line)
+--               local fm = {}
+--               local current_key = nil
+--               local in_multiline = false
+--               
+--               for line_idx = start_line + 1, end_line - 1 do
+--                 local line = lines[line_idx]
+--                 local list_match = line:match("^(%w+):%s*$")
+--                 
+--                 if list_match then
+--                   current_key = list_match
+--                   fm[current_key] = {}
+--                   in_multiline = true
+--                 elseif in_multiline and line:match("^%s*-%s") then
+--                   local item = line:match("^%s*-%s*(.*)$")
+--                   table.insert(fm[current_key], item)
+--                 elseif line:match("^(%w+):%s*(.+)$") then
+--                   local key, value = line:match("^(%w+):%s*(.+)$")
+--                   fm[key] = value
+--                   current_key = nil
+--                   in_multiline = false
+--                 elseif line:match("^%w+:") then
+--                   local key = line:match("^(%w+):")
+--                   fm[key] = ""
+--                   current_key = nil
+--                   in_multiline = false
+--                 else
+--                   current_key = nil
+--                   in_multiline = false
+--                 end
+--               end
+--               
+--               return fm
+--             end
+--             
+--             local frontmatter = parse_frontmatter(last_fm.start_line, last_fm.end_line)
+--             
+--             -- Actualizar modified y created
+--             frontmatter.modified = new_timestamp
+--             if not frontmatter.created then
+--               frontmatter.created = new_timestamp
+--             end
+-- 
+--             -- Reordenar frontmatter
+--             local ordered_keys = { "id", "tags", "aliases", "sources", "related", "keywords", "created", "modified" }
+--             local new_frontmatter = { "---" }
+-- 
+--             local function format_value(key, value)
+--               if type(value) == "table" then
+--                 if #value == 0 then
+--                   return key .. ": []"
+--                 else
+--                   local result = { key .. ":" }
+--                   for _, item in ipairs(value) do
+--                     table.insert(result, "  - " .. item)
+--                   end
+--                   return result
+--                 end
+--               else
+--                 return key .. ": " .. tostring(value)
+--               end
+--             end
+-- 
+--             for _, key in ipairs(ordered_keys) do
+--               if frontmatter[key] ~= nil then
+--                 local formatted = format_value(key, frontmatter[key])
+--                 if type(formatted) == "table" then
+--                   for _, line in ipairs(formatted) do
+--                     table.insert(new_frontmatter, line)
+--                   end
+--                 else
+--                   table.insert(new_frontmatter, formatted)
+--                 end
+--                 frontmatter[key] = nil
+--               end
+--             end
+-- 
+--             -- Campos extras alfabéticamente
+--             local extra_keys = {}
+--             for key, _ in pairs(frontmatter) do
+--               table.insert(extra_keys, key)
+--             end
+--             table.sort(extra_keys)
+-- 
+--             for _, key in ipairs(extra_keys) do
+--               local formatted = format_value(key, frontmatter[key])
+--               if type(formatted) == "table" then
+--                 for _, line in ipairs(formatted) do
+--                   table.insert(new_frontmatter, line)
+--                 end
+--               else
+--                 table.insert(new_frontmatter, formatted)
+--               end
+--             end
+-- 
+--             table.insert(new_frontmatter, "---")
+-- 
+--             -- Obtener contenido después del último frontmatter
+--             local content_lines = {}
+--             local found_content = false
+--             
+--             for idx = last_fm.end_line + 1, #lines do
+--               if not found_content and lines[idx]:match("^%s*$") then
+--                 goto continue
+--               end
+--               found_content = true
+--               table.insert(content_lines, lines[idx])
+--               ::continue::
+--             end
+-- 
+--             -- Reconstruir buffer
+--             local final_lines = {}
+--             for _, line in ipairs(new_frontmatter) do
+--               table.insert(final_lines, line)
+--             end
+--             
+--             if #content_lines > 0 then
+--               table.insert(final_lines, "")
+--               for _, line in ipairs(content_lines) do
+--                 table.insert(final_lines, line)
+--               end
+--             end
+-- 
+--             -- Reemplazar buffer
+--             local ok, err = pcall(function()
+--               vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, final_lines)
+--             end)
+--             
+--             if not ok then
+--               vim.notify("Error updating frontmatter: " .. tostring(err), vim.log.levels.WARN)
+--             end
+--           end,
+--         })
       end,
     },
 
