@@ -4,6 +4,9 @@
 # If not running interactively, don't do anything
 [[ $- != *i* ]] && return
 
+# If no TTY (e.g. Zed env capture), skip interactive setup
+[[ ! -t 0 ]] && return
+
 # ============================================================================
 # Zsh Options
 # ============================================================================
