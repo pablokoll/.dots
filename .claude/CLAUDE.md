@@ -13,6 +13,7 @@
 - Claude Code config lives in `~/.claude/`
 - Hyprland, Omarchy, OS config, nvim, dotfiles, LazyVim → use the Omarchy agent (Task tool with Omarchy docs context).
 - **Vault in projects**: if I mention Obsidian while in a project, read `.claude/project-link.md` first — it has the vault path and linked project context. If missing, ask.
+- **Subprojects**: `project-link.md` may contain `sub_vault_path_<name>` entries for subprojects. Each `<name>` is a single lowercase word (e.g. `theme`, `api`). When the user says "trabajemos en sub `theme`" or references a subproject by name, use that `sub_vault_path_<name>` as the active vault path for that subproject's Index.
 
 ## Workflow
 
@@ -46,6 +47,15 @@ grill-me | grill-with-docs → to-prd → to-issues → sdd (+tdd +diagnose) →
 | `/diagnose` | "hay un bug", "algo está roto", "debuggeemos esto" |
 | `/tdd` | "implementemos con TDD", "tests primero", "arrancamos un task" |
 | `/sdd` | "ejecutemos con subagentes", "arrancamos los tasks", "implementemos el plan" |
+
+### NotebookLM
+NotebookLM es una herramienta de procesamiento de información del ecosistema — no un PKM.
+Obsidian es el central de PKM; NotebookLM es el motor para ingerir fuentes (PDFs, videos, URLs)
+y extraer conocimiento de ellas. El output puede volver al vault via las skills de Obsidian — solo si el usuario lo quiere.
+
+| Skill | Trigger |
+|-------|---------|
+| `/notebooklm` | "nlm", "nblm", "notebooklm", "cuaderno de investigación", "procesá este PDF/video", "agregá al notebook", "consultá el cuaderno de X", "generá un audio de", "creá un notebook para", "investigá en notebooklm" |
 
 ### Dots
 | Skill | Trigger |

@@ -55,7 +55,10 @@ Template: `Resources/Templates/Project Index.md`
 # Project Link
 vault_path: Projects/<parent>/<name>/<name> Index.md
 project_name: <name>
+sub_vault_path_<name>: Projects/<parent>/<name>/<Subname>/<Subname> Index.md
 ```
+
+Subproject entries are optional. Each `<name>` is a single lowercase word (e.g. `theme`, `api`). Add them during init or later via `/project-link`.
 
 ## Template variables
 - `{{title}}` → project name
