@@ -25,7 +25,7 @@ Scan vault before showing anything:
 - Notes with `status/finished` still in Inbox (possible oversight)
 
 **B. Literature notes with pending atomic candidates**
-- Files with `- [ ]` inside `## ⚛️ Posibles notas atómicas`
+- Files with `- [ ]` inside `## ⚛️ Posibles notas atómicas` or `## ⚛️ Possible atomic notes`
 
 **C. Orphaned permanent notes**
 - Tags `zettelkasten/permanent/atomic` or `molecule` not linked from any other note
@@ -71,6 +71,9 @@ Then ask: **"Where do we start?"**
 - General/uncategorized → `Archive/General/`
 
 **Literature note with ⚛️ pending** → remind: `"Use /refine-notes on [[<note>]]"`
+
+## Rules
+- Output language follows active session language. Default: English.
 
 **Orphan** → find related notes, suggest adding link, edit if confirmed
 

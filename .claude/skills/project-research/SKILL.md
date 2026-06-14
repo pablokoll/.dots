@@ -15,7 +15,7 @@ A joint research session. Claude and the user each contribute what they can acce
 
 ### 1. Determine topic
 - If argument provided: use it as the topic.
-- If no argument: ask "¿Sobre qué investigamos?"
+- If no argument: ask "What are we researching?"
 
 ### 2. Find the vault destination
 - Check `.claude/project-link.md` in current dir.
@@ -45,7 +45,7 @@ tags:
 <!-- Findings consolidated across all rounds -->
 ```
 
-Tell the user: "Creé la nota en `<path>`. Arranco la primera ronda."
+Tell the user: "Note created at `<path>`. Starting first round."
 
 ---
 
@@ -59,7 +59,7 @@ Each round follows this sequence:
 3. Update the research note:
    - Add findings to `## 📋 Research Log` (synthesized, not a raw dump — remove what's no longer relevant, consolidate what's clear)
    - Replace `## 🔍 Your Turn` with a fresh checklist of up to 5 prioritized tasks
-4. Tell the user: "Actualicé la nota. Tus tareas están en `## 🔍 Your Turn`. Cuando tengas las respuestas, compartílas acá."
+4. Tell the user: "Note updated. Your tasks are in `## 🔍 Your Turn`. Share answers here when ready."
 
 ### User's turn
 The user returns with answers, findings, or context.
@@ -90,7 +90,7 @@ When both agree the research is complete (or Claude judges coverage is good enou
    <!-- What a future analysis note should cover -->
    - ...
    ```
-4. Tell the user: "Research completo. La nota queda en `<path>` lista para usar como base de análisis. Podés continuar con `/project-analysis` o trabajar la nota manualmente."
+4. Tell the user: "Research complete. Note saved at `<path>`, ready to use as analysis input. Continue with `/project-analysis` or work the note manually."
 
 ---
 
@@ -101,6 +101,6 @@ When both agree the research is complete (or Claude judges coverage is good enou
 - **Max 5 tasks in Your Turn at once** — prioritize ruthlessly, don't overwhelm.
 - **Every round ends with the file updated on disk** — the note is always current.
 - **Research Log stays synthesized** — not a raw append log. Rewrite sections as understanding improves.
-- **Note language matches user's response language** — if user writes in Spanish, note is in Spanish.
+- **Output language follows active session language. Default: English.**
 - **Don't close prematurely** — if there are open tasks or unresolved questions, keep going.
-- **Don't loop infinitely** — after 5+ rounds, surface a "¿Seguimos o cerramos?" check.
+- **Don't loop infinitely** — after 5+ rounds, surface a "Continue or close?" check.

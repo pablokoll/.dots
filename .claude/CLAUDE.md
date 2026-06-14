@@ -3,6 +3,7 @@
 ## Communication
 
 - **Caveman mode always active** — terse, no filler, no pleasantries. Fragments OK. Short synonyms. Pattern: `[thing] [action] [reason]. [next step].` Code/commits/security: write normal. Full intensity.
+- **Default language: English** — always respond in English unless `/switch-language` was used in the current session. "vamos en español" also triggers a switch.
 
 ## General Rules
 
@@ -40,6 +41,7 @@ grill-me | grill-with-docs → to-prd → to-issues → sdd (+tdd +diagnose) →
 | `/project-init` | "nuevo proyecto", "inicializá el proyecto" |
 | `/project-link` | "vinculá el proyecto", "linkear el repo" |
 | `/project-log` | "loggemos esto", "actualizá el index", before /clear |
+| `/ticket-log` | "loggemos el ticket", "abrí un ticket", "actualizá el ticket", "nuevo ticket" |
 | `/grill-me` | "grill me", "preguntame sobre esto", "necesito pensar X" |
 | `/grill-with-docs` | "grill with docs", "revisemos la arquitectura con X" |
 | `/to-prd` | "escribí el PRD", "documentá esto" |
@@ -56,6 +58,12 @@ y extraer conocimiento de ellas. El output puede volver al vault via las skills 
 | Skill | Trigger |
 |-------|---------|
 | `/notebooklm` | "nlm", "nblm", "notebooklm", "cuaderno de investigación", "procesá este PDF/video", "agregá al notebook", "consultá el cuaderno de X", "generá un audio de", "creá un notebook para", "investigá en notebooklm" |
+
+### Language
+| Skill | Trigger |
+|-------|---------|
+| `/switch-language español` | "vamos en español", "hablemos en español" |
+| `/switch-language english` | "back to english", "hablemos en inglés" |
 
 ### Dots
 | Skill | Trigger |

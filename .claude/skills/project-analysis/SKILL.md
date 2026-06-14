@@ -15,7 +15,7 @@ Turn research, findings, or raw context into a structured analysis note with act
 
 ### 1. Determine topic
 - If argument provided: use it as the topic.
-- If no argument: ask "¿Qué analizamos? (o pasame la nota de research si tenés una)"
+- If no argument: ask "What are we analyzing? (share a research note if you have one)"
 
 ### 2. Find the input
 Ask or detect — in priority order:
@@ -30,7 +30,7 @@ Ask or detect — in priority order:
 - `topic-slug`: lowercase, hyphens, no spaces
 
 ### 4. Draft the analysis note
-Before writing to disk, present a draft in conversation. Ask: "¿Ajustamos algo antes de guardar?"
+Before writing to disk, present a draft in conversation. Ask: "Anything to adjust before saving?"
 
 ---
 
@@ -86,8 +86,8 @@ research: [[researches/YYYY-MM-DD - <slug>]] <!-- if applicable -->
 8. Present draft, discuss, refine, then write to disk.
 
 ### If input is loose context or from scratch
-1. Ask: "¿Cuál es la pregunta central que querés responder con este análisis?" — this becomes the anchor for `## Context`.
-2. Ask the user to dump what tienen — notas, links, conclusiones propias, lo que sea.
+1. Ask: "What's the central question you want to answer with this analysis?" — this becomes the anchor for `## Context`.
+2. Ask the user to dump what they have — notes, links, their own conclusions, anything.
 3. Claude complements with web searches if needed.
 4. Build the note sections iteratively — present each section, adjust, move forward.
 5. Write to disk once the user confirms.
@@ -106,7 +106,7 @@ research: [[researches/YYYY-MM-DD - <slug>]] <!-- if applicable -->
 
 When the note is saved:
 1. If inside a project with `project-link.md`: offer to log the analysis to the Project Index via `/project-log`.
-2. Tell the user: "Análisis guardado en `<path>`. Podés continuarlo cambiando `status: draft` a `final` cuando estés conforme."
+2. Tell the user: "Analysis saved to `<path>`. You can finalize it by changing `status: draft` to `final` when ready."
 
 ---
 
@@ -116,5 +116,5 @@ When the note is saved:
 - `## Analysis` = interpretation only, no new facts.
 - `## Conclusions` = crisp, assertive — no "podría ser" or "tal vez".
 - `## Recommendations` = always a checklist, always actionable.
-- Note language matches user's response language.
+- Output language follows active session language. Default: English.
 - Filename: `YYYY-MM-DD - <topic-slug>.md`

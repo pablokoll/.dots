@@ -49,13 +49,13 @@ Session expires ~20 min — re-run `nlm login` if commands fail with auth errors
 | Research a topic | `research start --auto-import` | `/literature-note` or `/quick-note` |
 | Batch query | `batch query` or `cross query` | — |
 
-**When intent is ambiguous:** ask one question — "¿esto es para estudio, un proyecto, o captura rápida?"
+**When intent is ambiguous:** ask one question — "Is this for study, a project, or quick capture?"
 
 ## Decision Framework
 
 1. **New notebook?** → `nlm notebook create` then `nlm alias set` for a short alias
 2. **Target notebook unknown?** → ALWAYS run `nlm notebook list` and show the list to the user
-   before proceeding. Ask: "¿en qué cuaderno lo metemos?" or suggest the most relevant one.
+   before proceeding. Ask: "Which notebook?" or suggest the most relevant one.
    Never assume a notebook without confirming.
 3. **Adding source?**
    - PDF → `--file <path> --wait`

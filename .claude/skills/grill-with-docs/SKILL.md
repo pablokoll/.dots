@@ -15,7 +15,7 @@ Like grill-me but deeper — up to 30 questions, one at a time. Output is a form
 3. Cover: context, constraints, alternatives considered, decision, consequences
 4. When grilling is complete, draft the ADR and show it for confirmation
 5. Save to `<project-folder>/adrs/ADR-<NNN>-<slug>.md`
-6. Add a link to the ADR under `## 🔑 Decisiones Importantes` in the Project Index
+6. Add a link to the ADR under `## 🔑 Key Decisions` in the Project Index
 
 ## ADR Format
 
@@ -44,6 +44,7 @@ status: accepted
 
 ## Rules
 
+- Output language follows active session language. Default: English.
 - If `CONTEXT.md` exists in the vault project folder, read it before grilling
 - One question per message
 - NNN is zero-padded (001, 002...)
