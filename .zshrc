@@ -211,3 +211,11 @@ if [ -f '/home/pablo/google-cloud-sdk/path.zsh.inc' ]; then . '/home/pablo/googl
 
 # The next line enables shell command completion for gcloud.
 if [ -f '/home/pablo/google-cloud-sdk/completion.zsh.inc' ]; then . '/home/pablo/google-cloud-sdk/completion.zsh.inc'; fi
+
+# pnpm
+export PNPM_HOME="/home/pablo/.local/share/pnpm"
+case ":$PATH:" in
+  *":$PNPM_HOME/bin:"*) ;;
+  *) export PATH="$PNPM_HOME/bin:$PATH" ;;
+esac
+# pnpm end
