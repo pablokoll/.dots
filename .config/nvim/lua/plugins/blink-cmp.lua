@@ -59,12 +59,6 @@ return {
       -- Orden de prioridad de fuentes
       default = { "lsp", "path", "snippets", "buffer" },
 
-      -- Obsidian sources solo en markdown (configurado manualmente para evitar
-      -- problemas de timing con la auto-integración de obsidian.nvim)
-      per_filetype = {
-        markdown = { "obsidian", "obsidian_new", "obsidian_tags", "lsp", "path", "snippets", "buffer" },
-      },
-
       -- Providers (configurar fuentes individuales)
       providers = {
         lsp = {
@@ -86,41 +80,6 @@ return {
         buffer = {
           name = "Buffer",
           module = "blink.cmp.sources.buffer",
-        },
-        -- Obsidian providers (wiki links, tags, new notes)
-        -- enabled() checks that obsidian.nvim is fully initialized before blink calls the source
-        obsidian = {
-          name = "obsidian",
-          module = "obsidian.completion.sources.blink.refs",
-          async = true,
-          enabled = function()
-            return _G.Obsidian ~= nil and _G.Obsidian.opts ~= nil
-          end,
-          -- blink filtra por label, que es "[[NoteName]]" — los corchetes
-          -- rompen el fuzzy match. filterText le dice a blink que filtre
-          -- solo contra el nombre limpio de la nota.
-          transform_items = function(_, items)
-            for _, item in ipairs(items) do
-              item.filterText = item.label:gsub("^%[%[", ""):gsub("%]%]$", "")
-            end
-            return items
-          end,
-        },
-        obsidian_new = {
-          name = "obsidian_new",
-          module = "obsidian.completion.sources.blink.new",
-          async = true,
-          enabled = function()
-            return _G.Obsidian ~= nil and _G.Obsidian.opts ~= nil
-          end,
-        },
-        obsidian_tags = {
-          name = "obsidian_tags",
-          module = "obsidian.completion.sources.blink.tags",
-          async = true,
-          enabled = function()
-            return _G.Obsidian ~= nil and _G.Obsidian.opts ~= nil
-          end,
         },
       },
     },
