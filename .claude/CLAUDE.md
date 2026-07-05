@@ -3,22 +3,45 @@
 ## Communication
 
 - **Caveman mode always active** — terse, no filler, no pleasantries. Fragments OK. Short synonyms. Pattern: `[thing] [action] [reason]. [next step].` Code/commits/security: write normal. Full intensity.
-- **Default language: English** — always respond in English unless `/switch-language` was used in the current session. "vamos en español" also triggers a switch.
+- **Default language: English** — respond English unless `/switch-language` used. "vamos en español" triggers switch.
+
+## Code Style — Ponytail (always active)
+
+Ponytail governs **what gets built**, not prose. Ladder (stop at first rung that holds):
+
+1. Does this need to exist at all? → no: skip it (YAGNI)
+2. Already in this codebase? → reuse, don't rewrite
+3. Stdlib does it? → use it
+4. Native platform feature covers it? → use it (e.g. `<input type="date">`, CSS over JS, DB constraint over app code)
+5. Installed dependency solves it? → use it, never add a new one for what a few lines can do
+6. One line? → one line
+7. Only then: the minimum code that works
+
+**Rules**: No unrequested abstractions. No boilerplate "for later". Deletion over addition. Fewest files possible. Shortest working diff wins. Fix bugs at root cause, not at the symptom.
+
+**Never cut**: input validation at trust boundaries, error handling preventing data loss, security, accessibility, anything explicitly requested.
+
+**Output pattern**: `[code] → skipped: [X], add when [Y].` Code first, at most 3 short lines after.
+
+**Levels**: `full` (default) · `lite` (build it, name the lazier alt) · `ultra` (YAGNI extremist). Toggle: `/ponytail [lite|full|ultra|off]`.
+
+Pair with Caveman: Caveman = terse prose. Ponytail = minimal code. Both active simultaneously.
 
 ## General Rules
 
-- Anything requiring `sudo` — give me the command, I run it in another terminal. Wait for me to share output before continuing, unless I say otherwise.
-- Outside a project: clone repos or downloads go to `~/Documents` or `~/Downloads` — ask if unsure which.
-- When creating vault notes (daily note, quick note, etc.): note language must match my response language. English answers → English note. Spanish answers → Spanish note.
-- If I replied in English when creating a vault note: check spelling/grammar at the end and ask if I want corrections. Skip this in normal conversation or Spanish.
-- Claude Code config lives in `~/.claude/`
-- Hyprland, Omarchy, OS config, nvim, dotfiles, LazyVim → use the Omarchy agent (Task tool with Omarchy docs context).
-- **Vault in projects**: if I mention Obsidian while in a project, read `.claude/project-link.md` first — it has the vault path and linked project context. If missing, ask.
-- **Subprojects**: `project-link.md` may contain `sub_vault_path_<name>` entries for subprojects. Each `<name>` is a single lowercase word (e.g. `theme`, `api`). When the user says "trabajemos en sub `theme`" or references a subproject by name, use that `sub_vault_path_<name>` as the active vault path for that subproject's Index.
+- `sudo` needed — give command, I run in other terminal. Wait for output unless told otherwise.
+- Outside project: clones/downloads → `~/Documents` or `~/Downloads` — ask if unsure.
+- Vault notes: language matches response language. English → English note. Spanish → Spanish note.
+- English vault note created: check spelling/grammar, ask if want corrections. Skip in normal convo or Spanish.
+- Claude Code config in `~/.claude/`
+- Hyprland, Omarchy, OS config, nvim, dotfiles, LazyVim → Omarchy agent (Task tool with Omarchy docs context).
+- **Vault in projects**: Obsidian mentioned → read `.claude/project-link.md` first — has vault path + linked project context. Missing → ask.
+- **Subprojects**: `project-link.md` may have `sub_vault_path_<name>` entries. Each `<name>` single lowercase word (e.g. `theme`, `api`). User refs subproject by name → use `sub_vault_path_<name>` as active vault path for that subproject's Index.
+- **Alias `spm`** → refers to Linux user `pablo-shopimasters` on this machine. Client work lives in `/home/pablo/Work/clients/shopimasters`.
 
 ## Workflow
 
-Skills live in `~/.claude/skills/`. Invoke via `/skill-name`. The active workflow:
+Skills in `~/.claude/skills/`. Invoke via `/skill-name`. Active workflow:
 
 ```
 grill-me | grill-with-docs → to-prd → to-issues → sdd (+tdd +diagnose) → project-log
@@ -42,6 +65,7 @@ grill-me | grill-with-docs → to-prd → to-issues → sdd (+tdd +diagnose) →
 | `/project-link` | "vinculá el proyecto", "linkear el repo" |
 | `/project-log` | "loggemos esto", "actualizá el index", before /clear |
 | `/ticket-log` | "loggemos el ticket", "abrí un ticket", "actualizá el ticket", "nuevo ticket" |
+| `/project-track-hours` | "trackeá las horas", "actualizá las horas del proyecto", "cuántas horas llevamos" |
 | `/grill-me` | "grill me", "preguntame sobre esto", "necesito pensar X" |
 | `/grill-with-docs` | "grill with docs", "revisemos la arquitectura con X" |
 | `/to-prd` | "escribí el PRD", "documentá esto" |
@@ -51,9 +75,7 @@ grill-me | grill-with-docs → to-prd → to-issues → sdd (+tdd +diagnose) →
 | `/sdd` | "ejecutemos con subagentes", "arrancamos los tasks", "implementemos el plan" |
 
 ### NotebookLM
-NotebookLM es una herramienta de procesamiento de información del ecosistema — no un PKM.
-Obsidian es el central de PKM; NotebookLM es el motor para ingerir fuentes (PDFs, videos, URLs)
-y extraer conocimiento de ellas. El output puede volver al vault via las skills de Obsidian — solo si el usuario lo quiere.
+NotebookLM = info processing tool, not PKM. Obsidian = PKM hub; NotebookLM = ingest engine (PDFs, videos, URLs) → extract knowledge. Output → vault via Obsidian skills, only if user wants.
 
 | Skill | Trigger |
 |-------|---------|
@@ -92,24 +114,20 @@ SOLID · Clean Architecture (when it fits) · DRY · KISS · YAGNI · Separation
 
 ## Commits
 
-Conventional commits: `type(scope): description`
-
-Types: `feat` `fix` `docs` `style` `refactor` `test` `chore` `perf` `ci`
-
-Never add `Co-Authored-By` or any AI attribution to commits.
+`type(scope): subject` — imperative, ≤72 chars, lowercase; optional body (wrap 72) and footer (`BREAKING CHANGE:`, `Closes #n`); types: `feat` `fix` `docs` `style` `refactor` `test` `chore` `perf` `ci`. No AI attribution. **Keep commits short: 1–2 lines max, no body unless strictly necessary.**
 
 ## Second Brain — Obsidian Vault
 
 Path: `/home/pablo/Dropbox/Aplicaciones/remotely-save/personal-vault/`
 
-This vault is my Second Brain and PKM (Personal Knowledge Management) system. Everything goes here:
-- **Projects** — all active work, tracked in `<name> Index.md` per project
+Vault = Second Brain + PKM. Everything goes here:
+- **Projects** — active work, tracked in `<name> Index.md` per project
 - **Knowledge** — study, CS, architecture, technical notes (Zettelkasten: atomic/molecule/literature)
-- **Ideas** — captured as fleeting notes in `Resources/Inbox/`, processed into permanent notes
+- **Ideas** — fleeting notes in `Resources/Inbox/`, processed into permanent notes
 - **Life** — daily notes, personal areas, finance, journal
 
 Structure: PARA (Projects / Area / Resources / Archive).
 
-**Always assume the vault exists and matters.** If something is worth tracking — a project, a decision, a piece of knowledge, a study session — it belongs in the vault. Proactively suggest logging or noting when relevant. Use vault skills (`/project-log`, `/quick-note`, `/literature-note`, etc.) to keep it up to date.
+**Vault exists and matters.** Worth tracking → belongs in vault. Suggest logging proactively. Use vault skills (`/project-log`, `/quick-note`, `/literature-note`, etc.) to keep updated.
 
-When in a project with `.claude/project-link.md`: read it first — it links to the vault Project Index for that repo.
+Project with `.claude/project-link.md` → read first — links to vault Project Index for repo.

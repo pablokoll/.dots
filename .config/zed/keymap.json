@@ -37,6 +37,7 @@
       "shift-l": "pane::ActivateNextItem",
       "space e": "workspace::ToggleLeftDock",
       "space b d": "pane::CloseActiveItem",
+      "space w q": "pane::CloseActiveItem",
       "space b o": "pane::CloseInactiveItems",
       "space b l": "pane::CloseItemsToTheLeft",
       "space b r": "pane::CloseItemsToTheRight",
@@ -136,6 +137,18 @@
     "context": "Pane",
     "unbind": {
       "ctrl-shift-f": "project_search::ToggleFocus"
+    }
+  },
+  {
+    "bindings": {
+      "ctrl-shift-w": null,
+      "ctrl-f4": null
+    }
+  },
+  {
+    "context": "Terminal",
+    "bindings": {
+      "ctrl-w": "pane::CloseActiveItem"
     }
   },
   {

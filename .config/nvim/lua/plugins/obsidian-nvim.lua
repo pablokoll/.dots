@@ -294,11 +294,8 @@ return {
       default_tags = {}, -- No agregar tags automáticamente (se usan los del template)
     },
 
-    -- Completion configuration
-    -- Providers are configured directly in blink-cmp.lua to avoid timing issues
+    -- Completion via obsidian-ls LSP (legacy providers removed, deprecated in 4.0)
     completion = {
-      nvim_cmp = false,
-      blink = false, -- Disabled: providers registered manually in blink-cmp.lua
       min_chars = 2,
     },
 

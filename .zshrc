@@ -1,6 +1,9 @@
 # Zsh configuration for Pablo
 # Migrated from bash with ble.sh to clean Zsh setup
 
+# Load local overrides (user-specific, not shared)
+[[ -f ~/.zshrc.personal ]] && source ~/.zshrc.personal
+
 # If not running interactively, don't do anything
 [[ $- != *i* ]] && return
 
@@ -148,9 +151,9 @@ if command -v zoxide &> /dev/null; then
 fi
 
 # try (temporary environments)
-if command -v try &> /dev/null; then
-  eval "$(try init ~/Work/tries)"
-fi
+# if command -v try &> /dev/null; then
+#   eval "$(try init ~/Work/tries)"
+# fi
 
 # fzf (fuzzy finder)
 if command -v fzf &> /dev/null; then
@@ -170,7 +173,7 @@ fi
 
 # Auto-launch tmux with a new anonymous session for each terminal
 # Only if not already inside tmux
-if command -v tmux &> /dev/null && [ -z "$TMUX" ] && [ -z "$VSCODE_INJECTION" ] && [ -z "$ZED_TERM" ]; then
+if command -v tmux &> /dev/null && [ -z "$TMUX" ] && [ -z "$VSCODE_INJECTION" ] && [ -z "$ZED_TERM" ] && [ -z "$TMUX_SKIP_AUTOLAUNCH" ]; then
   # Create new session without name (tmux will auto-generate: 0, 1, 2, etc.)
   exec tmux new-session
 fi
@@ -191,7 +194,7 @@ if [[ -f /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh ]]; 
   ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
 fi
 
-. "$HOME/.local/share/../bin/env"
+# . "$HOME/.local/share/../bin/env"
 
 # opencode
 export PATH=/home/pablo/.opencode/bin:$PATH
@@ -205,6 +208,7 @@ export PATH="$BUN_INSTALL/bin:$PATH"
 
 alias claude-mem='/home/pablo/.bun/bin/bun "/home/pablo/.claude/plugins/cache/thedotmack/claude-mem/12.2.0/scripts/worker-service.cjs"'
 alias dots="git --git-dir=$HOME/Work/personal/.dots --work-tree=$HOME"
+alias spm="sudo -u pablo-shopimasters -i"
 
 # The next line updates PATH for the Google Cloud SDK.
 if [ -f '/home/pablo/google-cloud-sdk/path.zsh.inc' ]; then . '/home/pablo/google-cloud-sdk/path.zsh.inc'; fi

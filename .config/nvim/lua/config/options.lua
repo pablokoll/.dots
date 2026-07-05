@@ -14,3 +14,8 @@ vim.opt.writebackup = false -- No crear backup antes de sobrescribir
 -- Habilitar persistent undo (mejor alternativa a swapfiles)
 vim.opt.undofile = true
 vim.opt.undolevels = 10000 -- Más niveles de undo
+
+-- Fold via treesitter
+vim.opt.foldmethod = "expr"
+vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+vim.opt.foldenable = false -- archivos abren sin folds cerrados

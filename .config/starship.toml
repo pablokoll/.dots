@@ -1,6 +1,6 @@
 add_newline = true
 command_timeout = 200
-format = "[$directory$git_branch$git_status]($style)$status${env_var.VI_MODE_INSERT}${env_var.VI_MODE_NORMAL} $character"
+format = "${env_var.SHOPIMASTERS_SESSION}[$directory$git_branch$git_status]($style)$status${env_var.VI_MODE_INSERT}${env_var.VI_MODE_NORMAL} $character"
 
 [character]
 error_symbol = "[✗](bold cyan)"
@@ -45,3 +45,8 @@ style = "bold green"
 variable = "VI_MODE_NORMAL"
 format = "[$env_value]($style)"
 style = "bold blue"
+
+[env_var.SHOPIMASTERS_SESSION]
+variable = "SHOPIMASTERS_SESSION"
+format = "[󰀄 shopimasters ]($style)"
+style = "bold bg:#0d4040 fg:#4ecdc4"

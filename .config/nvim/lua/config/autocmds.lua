@@ -12,7 +12,16 @@ vim.api.nvim_create_autocmd("FileType", {
   callback = function()
     vim.opt_local.spell = true
     vim.opt_local.spelllang = "en,es"
-    vim.opt_local.foldmethod = "manual"
   end,
-  desc = "Enable spell checking and fix foldmethod for text filetypes",
+  desc = "Enable spell checking for text filetypes",
+})
+
+vim.api.nvim_create_autocmd("BufWinEnter", {
+  pattern = { "*.md", "*.markdown" },
+  callback = function()
+    vim.opt_local.foldmethod = "expr"
+    vim.opt_local.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+    vim.opt_local.foldenable = false
+  end,
+  desc = "Treesitter folding for markdown",
 })
