@@ -166,6 +166,7 @@ fi
 # ============================================================================
 
 # Add your own exports, aliases, and functions here
+alias ntm='TMUX_SKIP_AUTOLAUNCH=1 nohup $TERMINAL &>/dev/null & disown'
 
 # ============================================================================
 # Auto-launch tmux
@@ -208,7 +209,11 @@ export PATH="$BUN_INSTALL/bin:$PATH"
 
 alias claude-mem='/home/pablo/.bun/bin/bun "/home/pablo/.claude/plugins/cache/thedotmack/claude-mem/12.2.0/scripts/worker-service.cjs"'
 alias dots="git --git-dir=$HOME/Work/personal/.dots --work-tree=$HOME"
-alias spm="sudo -u pablo-shopimasters -i"
+spm() {
+  sudo setfacl -m u:pablo-shopimasters:rx /run/user/1000
+  sudo setfacl -m u:pablo-shopimasters:rw /run/user/1000/wayland-1 2>/dev/null
+  sudo -u pablo-shopimasters -i
+}
 
 # The next line updates PATH for the Google Cloud SDK.
 if [ -f '/home/pablo/google-cloud-sdk/path.zsh.inc' ]; then . '/home/pablo/google-cloud-sdk/path.zsh.inc'; fi

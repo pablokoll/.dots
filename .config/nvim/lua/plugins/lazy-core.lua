@@ -315,10 +315,15 @@ return {
   -- ─────────────────────────────────────────────────────────────────────────
   -- noice.nvim - Mejora UI de mensajes, cmdline y popupmenu
   -- ─────────────────────────────────────────────────────────────────────────
-  -- {
-  --   "folke/noice.nvim",
-  --   enabled = false,  -- Si prefieres UI nativa de Neovim
-  -- },
+  {
+    "folke/noice.nvim",
+    opts = {
+      -- ponytail: pyright reporta progress en cada didChange; noice lo
+      -- renderiza como toast individual (throttle 100ms es muy corto).
+      -- Apagar solo esta vista, dejar cmdline/popup de noice intactos.
+      lsp = { progress = { enabled = false } },
+    },
+  },
 
   -- ═════════════════════════════════════════════════════════════════════════
   -- 🛠️ UTILITY PLUGINS

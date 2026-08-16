@@ -57,6 +57,7 @@ grill-me | grill-with-docs → to-prd → to-issues → sdd (+tdd +diagnose) →
 | `/literature-note` | "literature note de X", "sesión de estudio" |
 | `/review-vault` | "revisemos el vault", "auditoría del vault" |
 | `/zoom-out` | "zoom out", "revisión estratégica" |
+| `/flashcards` | "generá flashcards de X", "hacemos las flashcards de esta semana" |
 
 ### Project skills
 | Skill | Trigger |

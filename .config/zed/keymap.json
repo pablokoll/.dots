@@ -56,6 +56,13 @@
     }
   },
   {
+    "context": "Editor && VimControl && vim_mode == normal",
+    "bindings": {
+      "s": "vim::PushSneak",
+      "shift-s": "vim::PushSneakBackward"
+    }
+  },
+  {
     "bindings": {
       "ctrl-p": "file_finder::Toggle",
       "shift-h": "pane::ActivatePreviousItem",
@@ -161,6 +168,48 @@
     "context": "ProjectSearchBar",
     "unbind": {
       "ctrl-shift-f": "search::FocusSearch"
+    }
+  },
+  {
+    "unbind": {
+      "f11": "zed::ToggleFullScreen"
+    }
+  },
+  {
+    "context": "Workspace",
+    "unbind": {
+      "f10": [
+        "app_menu::OpenApplicationMenu",
+        "Zed"
+      ]
+    }
+  },
+  {
+    "context": "ApplicationMenu",
+    "unbind": {
+      "f10": "menu::Cancel"
+    }
+  },
+  {
+    "context": "(vim_mode == helix_normal || vim_mode == helix_select) && !menu",
+    "bindings": {
+      "f11": "debugger::StepInto"
+    }
+  },
+  {
+    "context": "(vim_mode == helix_normal || vim_mode == helix_select) && !menu",
+    "unbind": {
+      "space shift-g i": "debugger::StepInto"
+    }
+  },
+  {
+    "bindings": {
+      "f10": "debugger::StepOver"
+    }
+  },
+  {
+    "unbind": {
+      "f7": "debugger::StepOver"
     }
   }
 ]
