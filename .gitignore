@@ -15,3 +15,24 @@
 .config/hypr/*.backup-*
 .config/hypr/*.bak*
 .config/walker/*.bak*
+
+# Claude Code runtime state (credentials, sessions, caches, logs)
+.claude/.credentials.json
+.claude/backups/
+.claude/cache/
+.claude/daemon/
+.claude/debug/
+.claude/file-history/
+.claude/history.jsonl
+.claude/ide/
+.claude/image-cache/
+.claude/paste-cache/
+.claude/projects/
+.claude/sessions/
+.claude/session-env/
+.claude/shell-snapshots/
+.claude/statsig/
+.claude/stats-cache.json
+.claude/todos/
+.claude/daemon*
+.claude/.last-cleanup

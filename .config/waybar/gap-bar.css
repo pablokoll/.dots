@@ -1,8 +1,0 @@
-@import "../omarchy/current/theme/waybar.css";
-@import "style.css";
-
-window#waybar {
-  border: none;
-  border-radius: 0;
-  margin-right: 0;
-}
