@@ -24,6 +24,13 @@ return {
     -- Herdr desktop app (herdr-core sets HC_TERMINAL_ID): the app hands
     -- <C-h/j/k/l> to nvim; at a split edge, give the move back to the app.
     if vim.env.HC_TERMINAL_ID and vim.env.HC_TERMINAL_ID ~= "" then
+      -- The app sends <C-hjkl> to this socket: `hc keys` holds keys ~2 s after any
+      -- typing (core's quiet rule). Not from a nested :terminal nvim ($NVIM set).
+      if not vim.env.NVIM then
+        local function label(v) return vim.system({ "hc", "label", vim.env.HC_TERMINAL_ID, "nvim.server=" .. v }) end
+        label(vim.v.servername)
+        vim.api.nvim_create_autocmd("VimLeavePre", { callback = function() label(""):wait(500) end })
+      end
       for key, dir in pairs({ h = "left", j = "down", k = "up", l = "right" }) do
         vim.keymap.set("n", "<C-" .. key .. ">", function()
           local win = vim.api.nvim_get_current_win()

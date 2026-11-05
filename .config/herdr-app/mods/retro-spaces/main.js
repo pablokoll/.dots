@@ -138,7 +138,7 @@ export default class Spaces extends View {
   // fall through to keys.json, so ctrl+j/k still moves between sidebar blocks.
   // ctrl+hjkl (keys.json: retro-spaces.nav-<dir>), vim-tmux-navigator style: (n)vim in the
   // focused pane gets the key; it hands back edge-<dir> at its split edge
-  // (~/.config/nvim/after/plugin/herdr_app_nav.lua). Otherwise pane focus moves, and
+  // (~/.config/nvim/lua/plugins/vim-tmux-navigation.lua). Otherwise pane focus moves, and
   // left with nothing there (or a pane on another machine, where pane.go misses
   // the sidebar) opens this list. Here, not in an overlay: an overlay's focused() is null.
   nav(dir, edge, cx) {
@@ -148,10 +148,16 @@ export default class Spaces extends View {
       // The foreground program, live from the core: the app's own program scan lags
       // by seconds, so a fresh nvim would lose its keys to pane.go meanwhile.
       const r = await hc(["get", f.terminal, "--json"]);
-      let fg = null;
-      try { fg = JSON.parse(r.stdout).foreground?.name ?? null; } catch {}
-      if (VIM.has(fg)) await hc(["keys", f.terminal, `ctrl+${NAV_KEY[dir]}`]);
-      else this.move(dir, f, cx);
+      let fg = null, server = null;
+      try { const t = JSON.parse(r.stdout); fg = t.foreground?.name ?? null; server = t.labels?.["nvim.server"] || null; } catch {}
+      if (!VIM.has(fg)) return this.move(dir, f, cx);
+      // nvim's own socket (it labels its terminal): `hc keys` holds keys until nobody
+      // has typed for ~2 s, so a ctrl+h right after typing landed late. This machine only.
+      if (server && !f.terminal.includes("/")) {
+        const s = await exec("nvim", ["--server", server, "--remote-send", `<C-${NAV_KEY[dir]}>`]);
+        if (s.code === 0) return;
+      }
+      await hc(["keys", f.terminal, `ctrl+${NAV_KEY[dir]}`]);
     });
   }
 
