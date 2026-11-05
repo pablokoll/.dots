@@ -1,5 +1,106 @@
 [
   {
+    "plugin_id": "cremarch.select-layout",
+    "name": "Select Layout",
+    "version": "0.1.0",
+    "min_herdr_version": "0.9.5",
+    "description": "tmux select-layout for herdr: even, main and tiled layouts, next and spread",
+    "manifest_path": "/home/pablo/.config/herdr/plugins/github-installations/cremarch.select-layout-1f7b53536a7a/895163-0/checkout/herdr-plugin.toml",
+    "plugin_root": "/home/pablo/.config/herdr/plugins/github-installations/cremarch.select-layout-1f7b53536a7a/895163-0/checkout",
+    "enabled": true,
+    "platforms": [
+      "macos",
+      "linux"
+    ],
+    "actions": [
+      {
+        "id": "even-horizontal",
+        "title": "Layout: even horizontal (one row)",
+        "contexts": [
+          "pane"
+        ],
+        "command": [
+          "./select-layout",
+          "even-horizontal"
+        ]
+      },
+      {
+        "id": "even-vertical",
+        "title": "Layout: even vertical (one column)",
+        "contexts": [
+          "pane"
+        ],
+        "command": [
+          "./select-layout",
+          "even-vertical"
+        ]
+      },
+      {
+        "id": "main-horizontal",
+        "title": "Layout: main horizontal (main pane on top)",
+        "contexts": [
+          "pane"
+        ],
+        "command": [
+          "./select-layout",
+          "main-horizontal"
+        ]
+      },
+      {
+        "id": "main-vertical",
+        "title": "Layout: main vertical (main pane on the left)",
+        "contexts": [
+          "pane"
+        ],
+        "command": [
+          "./select-layout",
+          "main-vertical"
+        ]
+      },
+      {
+        "id": "next",
+        "title": "Layout: next",
+        "contexts": [
+          "pane"
+        ],
+        "command": [
+          "./select-layout",
+          "next"
+        ]
+      },
+      {
+        "id": "spread",
+        "title": "Layout: spread panes evenly",
+        "contexts": [
+          "pane"
+        ],
+        "command": [
+          "./select-layout",
+          "spread"
+        ]
+      },
+      {
+        "id": "tiled",
+        "title": "Layout: tiled (grid, wider than tall)",
+        "contexts": [
+          "pane"
+        ],
+        "command": [
+          "./select-layout",
+          "tiled"
+        ]
+      }
+    ],
+    "source": {
+      "kind": "github",
+      "owner": "cremarch",
+      "repo": "herdr-select-layout",
+      "resolved_commit": "7e3e3224100600b053d47a7c8c9aed7feb03a331",
+      "managed_path": "/home/pablo/.config/herdr/plugins/github-installations/cremarch.select-layout-1f7b53536a7a/895163-0/checkout",
+      "installed_unix_ms": 1793872438657
+    }
+  },
+  {
     "plugin_id": "devswha.ovis",
     "name": "Ovis",
     "version": "0.4.22",

@@ -111,7 +111,8 @@
     "b": "tmux-prefix.panel:sidebar",
     "shift-b": "tmux-prefix.panel:right",
     "shift-g": "tmux-prefix.lazygit",
-    "shift-r": "tmux-prefix.mod.open:revive"
+    "shift-r": "tmux-prefix.mod.open:revive",
+    "shift-t": "tmux-prefix.panel:habitica"
   },
   "mod:retro-spaces": {
     "ctrl-h": "pane.go:left",
@@ -132,6 +133,9 @@
     "ctrl-h": "retro-spaces.back"
   },
   "mod:reviewer": {
+    "ctrl-h": "retro-spaces.back"
+  },
+  "mod:habitica": {
     "ctrl-h": "retro-spaces.back"
   }
 }

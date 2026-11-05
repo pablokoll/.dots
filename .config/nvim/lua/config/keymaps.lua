@@ -83,3 +83,27 @@ vim.keymap.set("n", "<leader>zz", "z=", { desc = "Spell suggestions" })
 vim.keymap.set("n", "<leader>zn", "]s", { desc = "Next misspelled word" })
 vim.keymap.set("n", "<leader>zp", "[s", { desc = "Previous misspelled word" })
 vim.keymap.set("n", "<leader>za", "zg", { desc = "Add word to dictionary" })
+
+-- ═══════════════════════════════════════════════════════════════════════════
+-- Habitica (habitica-sync ⇄ vault Area/Habitica.md)
+-- ═══════════════════════════════════════════════════════════════════════════
+local habitica_note = vim.fn.expand("~/Dropbox/Aplicaciones/remotely-save/personal-vault/Area/Habitica.md")
+
+vim.keymap.set("n", "<leader>hs", function()
+  -- Save the note first so its checks and new lines go up, then reload what came down.
+  local buf = vim.fn.bufnr(habitica_note)
+  if buf ~= -1 and vim.bo[buf].modified then
+    vim.api.nvim_buf_call(buf, function() vim.cmd("silent write") end)
+  end
+  vim.notify("Habitica: syncing…")
+  vim.system({ vim.fn.expand("~/.local/bin/habitica-sync") }, { text = true }, vim.schedule_wrap(function(r)
+    if r.code ~= 0 then
+      vim.notify("Habitica sync failed: " .. vim.trim(r.stderr or ""):match("[^\n]*$"), vim.log.levels.ERROR)
+      return
+    end
+    vim.cmd("checktime")
+    vim.notify("Habitica: synced")
+  end))
+end, { desc = "Habitica sync" })
+
+vim.keymap.set("n", "<leader>ho", function() vim.cmd.edit(habitica_note) end, { desc = "Habitica note" })

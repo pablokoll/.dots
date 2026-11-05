@@ -406,3 +406,46 @@ key = "prefix+ctrl+r"
 type = "plugin_action"
 command = "ntindle.herdr-resurrect.restore"
 description = "resurrect: restore"
+
+# select-layout (cremarch/herdr-select-layout), tmux style
+[[keys.command]]
+key = "prefix+space"
+type = "plugin_action"
+command = "cremarch.select-layout.next"
+description = "next layout"
+
+[[keys.command]]
+key = "prefix+alt+1"
+type = "plugin_action"
+command = "cremarch.select-layout.even-horizontal"
+description = "even horizontal"
+
+[[keys.command]]
+key = "prefix+alt+2"
+type = "plugin_action"
+command = "cremarch.select-layout.even-vertical"
+description = "even vertical"
+
+[[keys.command]]
+key = "prefix+alt+3"
+type = "plugin_action"
+command = "cremarch.select-layout.main-horizontal"
+description = "main horizontal"
+
+[[keys.command]]
+key = "prefix+alt+4"
+type = "plugin_action"
+command = "cremarch.select-layout.main-vertical"
+description = "main vertical"
+
+[[keys.command]]
+key = "prefix+alt+5"
+type = "plugin_action"
+command = "cremarch.select-layout.tiled"
+description = "tiled"
+
+[[keys.command]]
+key = "prefix+shift+e"
+type = "plugin_action"
+command = "cremarch.select-layout.spread"
+description = "spread panes evenly"

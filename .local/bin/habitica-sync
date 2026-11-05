@@ -1,0 +1,144 @@
+#!/usr/bin/env python3
+"""Two-way sync between Habitica to-dos and a vault note.
+
+Habitica holds the to-dos; the note is an editable mirror, grouped by urgency:
+  - checking a line completes it in Habitica
+  - a new line (no id) creates it; "📅 YYYY-MM-DD" sets its due date
+  - editing a line's text or date updates it (the snapshot tells who changed)
+Then the note is rewritten from Habitica, and a summary for the herdr bar is
+written to ~/.cache/habitica/todos.json.
+
+Credentials: ~/.config/habitica/credentials, two lines: user id, API token.
+`habitica-sync done <id>` completes one and syncs (the herdr panel uses it).
+`habitica-sync --selftest` checks the note parsing without the network.
+"""
+import json, os, re, sys, tempfile, urllib.request
+from datetime import date, datetime
+
+NOTE = os.path.expanduser("~/Dropbox/Aplicaciones/remotely-save/personal-vault/Area/Habitica.md")
+CREDS = os.path.expanduser("~/.config/habitica/credentials")
+CACHE = os.path.expanduser("~/.cache/habitica")
+API = "https://habitica.com/api/v3"
+LINE = re.compile(r"^- \[( |x|X)\] (.*?)(?: 📅 (\d{4}-\d{2}-\d{2}))?(?: <!--h:([0-9A-Fa-f-]+)-->)?\s*$")
+HEAD = "---\ntags:\n  - area/habitica\n---\n# Habitica\n\n> [!NOTE] Se sincroniza con Habitica cada 15 min. Tachá para completar, escribí `- [ ] algo 📅 AAAA-MM-DD` para crear.\n"
+
+
+def parse(text):
+    """Note lines → [{done, text, date, id}] (only task lines)."""
+    out = []
+    for line in text.splitlines():
+        m = LINE.match(line)
+        if m:
+            out.append({"done": m[1] != " ", "text": m[2].strip(), "date": m[3], "id": m[4]})
+    return out
+
+
+def head(text):
+    """Everything above the first "## " (frontmatter, title, notes) is the person's: kept as is."""
+    i = text.find("\n## ")
+    return text[: i + 1] if i >= 0 else (text if text.strip() else HEAD)
+
+
+def render(todos, today, top=HEAD):
+    """Habitica to-dos → note text, overdue first."""
+    groups = {"⚠️ Vencidos": [], "Hoy": [], "Próximos": [], "Sin fecha": []}
+    for t in sorted(todos, key=lambda t: (t["date"] or "9999", t["text"].lower())):
+        d = t["date"]
+        key = "Sin fecha" if not d else "⚠️ Vencidos" if d < today else "Hoy" if d == today else "Próximos"
+        groups[key].append(f"- [ ] {t['text']}" + (f" 📅 {d}" if d else "") + f" <!--h:{t['id']}-->")
+    body = "".join(f"\n## {k} ({len(v)})\n" + "".join(l + "\n" for l in v) for k, v in groups.items())
+    return top.rstrip("\n") + "\n" + body
+
+
+def day(iso):
+    """Habitica's date (ISO, UTC) → local YYYY-MM-DD."""
+    if not iso:
+        return None
+    return datetime.fromisoformat(iso.replace("Z", "+00:00")).astimezone().date().isoformat()
+
+
+class Habitica:
+    def __init__(self):
+        user, key = open(CREDS).read().split()[:2]
+        self.h = {"x-api-user": user, "x-api-key": key, "x-client": f"{user}-habitica-sync", "Content-Type": "application/json"}
+
+    def call(self, method, path, body=None):
+        req = urllib.request.Request(API + path, method=method, headers=self.h,
+                                     data=json.dumps(body).encode() if body is not None else None)
+        with urllib.request.urlopen(req, timeout=20) as r:
+            return json.load(r)["data"]
+
+    def todos(self):
+        return [{"id": t["id"], "text": t["text"], "date": day(t.get("date"))}
+                for t in self.call("GET", "/tasks/user?type=todos")]
+
+
+def write(path, text):
+    """Atomic, and only when it changed (an open editor isn't disturbed for nothing)."""
+    if os.path.exists(path) and open(path).read() == text:
+        return
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    fd, tmp = tempfile.mkstemp(dir=os.path.dirname(path))
+    with os.fdopen(fd, "w") as f:
+        f.write(text)
+    os.replace(tmp, path)
+
+
+def sync():
+    hb = Habitica()
+    snap_path = os.path.join(CACHE, "snapshot.json")
+    snap = json.load(open(snap_path)) if os.path.exists(snap_path) else {}
+    text = open(NOTE).read() if os.path.exists(NOTE) else ""
+    local = parse(text)
+    for t in local:
+        if not t["id"]:
+            # A line whose id didn't parse must never become a new task (it would duplicate).
+            if t["text"] and "<!--" not in t["text"]:
+                new = hb.call("POST", "/tasks/user", {"type": "todo", "text": t["text"], **({"date": t["date"]} if t["date"] else {})})
+                if t["done"]:
+                    hb.call("POST", f"/tasks/{new['id']}/score/up")
+        elif t["done"]:
+            try: hb.call("POST", f"/tasks/{t['id']}/score/up")
+            except urllib.error.HTTPError as e:
+                if e.code not in (401, 404): raise  # 404 gone, 401 "session outdated": completed already
+        elif t["id"] in snap and (t["text"], t["date"]) != tuple(snap[t["id"]]):
+            # Changed in the vault since the last sync: the vault's edit goes up.
+            hb.call("PUT", f"/tasks/{t['id']}", {"text": t["text"], "date": t["date"] or None})
+    todos = hb.todos()
+    today = date.today().isoformat()
+    write(NOTE, render(todos, today, head(text)))
+    write(snap_path, json.dumps({t["id"]: [t["text"], t["date"]] for t in todos}))
+    overdue = [t for t in todos if t["date"] and t["date"] < today]
+    due = [t for t in todos if t["date"] == today]
+    write(os.path.join(CACHE, "todos.json"), json.dumps({
+        "synced": datetime.now().astimezone().isoformat(timespec="seconds"),
+        "count": len(todos), "overdue": len(overdue), "today": len(due),
+        "top": [t["text"] for t in overdue + due][:8],
+        "todos": sorted(todos, key=lambda t: (t["date"] or "9999", t["text"].lower()))}))
+
+
+def selftest():
+    note = render([{"id": "a1", "text": "Pagar", "date": "2026-01-01"}, {"id": "b2", "text": "Leer", "date": None},
+                   {"id": "c3", "text": "Hoy algo", "date": "2026-06-01"}], "2026-06-01")
+    p = parse(note + "- [x] Hecho <!--h:d4-->\n- [ ] Nueva 📅 2026-07-01\n- [ ] Celu <!--h:277E4BB0-0AAD-48C9-AEBC-FA28DDD90217-->\n")
+    assert p[5] == {"done": False, "text": "Celu", "date": None, "id": "277E4BB0-0AAD-48C9-AEBC-FA28DDD90217"}, p[5]
+    assert [x["text"] for x in p] == ["Pagar", "Hoy algo", "Leer", "Hecho", "Nueva", "Celu"], p
+    assert p[0] == {"done": False, "text": "Pagar", "date": "2026-01-01", "id": "a1"}
+    assert p[3]["done"] and p[3]["id"] == "d4" and p[4]["id"] is None and p[4]["date"] == "2026-07-01"
+    mine = "---\nid: x\n---\n# Mi nota\n\nalgo mío\n"
+    assert render([], "2026-06-01", head(mine + "\n## Hoy\n- [ ] a <!--h:a1-->\n")).startswith(mine), "frontmatter kept"
+    assert "## Hoy (1)" in note and "## Próximos (0)" in note and "## Sin fecha (1)" in note, note
+    assert note.index("Vencidos") < note.index("Pagar") < note.index("## Hoy") < note.index("Hoy algo") < note.index("Leer")
+    print("ok")
+
+
+if __name__ == "__main__":
+    if "--selftest" in sys.argv:
+        selftest()
+    elif sys.argv[1:2] == ["done"] and len(sys.argv) == 3:  # complete one (the herdr panel), then sync
+        try: Habitica().call("POST", f"/tasks/{sys.argv[2]}/score/up")
+        except urllib.error.HTTPError as e:
+            if e.code not in (401, 404): raise
+        sync()
+    else:
+        sync()

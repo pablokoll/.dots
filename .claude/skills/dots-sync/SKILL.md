@@ -41,6 +41,8 @@ Warn if anything potentially sensitive appears (tokens, IPs, passwords).
 | Claude Code | `~/.claude/CLAUDE.md`, `~/.claude/skills/` |
 | Zed | `~/.config/zed/settings.json`, `~/.config/zed/keymap.json`, `~/.config/zed/themes/` |
 | VSCode | `~/.config/Code/User/settings.json`, `keybindings.json`, `snippets/`, `extensions.txt` |
+| herdr TUI | `~/.config/herdr/config.toml`, `plugins.json`, `plugins/config/` (not `plugins/github/`) |
+| herdr-app | `~/.config/herdr-app/` keys.json, settings.json, layouts/retro.*, themes/, own mods (retro-*, tabs-graph, tmux-prefix, file-icons, git-changes, reviewer, claude-usage, pc-stats, revive) minus `*.d.ts`/`jsconfig.json`; `~/.config/herdr-app-2/` symlinks |
 | SSH (example) | `~/.ssh/config.example` |
 | git | `~/.gitconfig.example` |
 | Obsidian | `/home/pablo/Dropbox/Aplicaciones/remotely-save/personal-vault/.obsidian/`, `/home/pablo/Dropbox/Aplicaciones/remotely-save/personal-vault/.obsidian.vimrc` |

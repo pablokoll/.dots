@@ -114,7 +114,7 @@ export default class Tabs extends View {
       : 10;
     // The app merges a single-child "panel" column into "panel-body", so in retro the
     // stack itself is what shows and hides (PANEL).
-    const enabled = [...(shared("workspace.panels") ?? ["files", "changes"]), "review", "agent"];
+    const enabled = [...(shared("workspace.panels") ?? ["files", "changes"]), "review", "agent", "habitica"];
     // Prefix keys (tmux-prefix "panel:<what>"): toggle a side panel, or minimize the
     // sidebar for this space.
     const req = shared("panel.toggle");
@@ -166,6 +166,7 @@ export default class Tabs extends View {
       .when(enabled.includes("files"), el => el.child(panelButton("files", "Files", "mods/files/file.svg")))
       .when(enabled.includes("changes"), el => el.child(panelButton("changes", "Changes", "mods/changes/changes.svg")))
       .child(panelButton("review", "Review", "mods/reviewer/comment.svg"))
+      .child(panelButton("habitica", "Habitica", "mods/reviewer/check.svg"))
       .when(w?.buttons, el => el.child(button("minimize", w.platform === "windows" ? svg("mods/tabs-graph/win-min.svg").size(16) : "−", () => run("window.minimize")))
         .child(button("maximize", w.platform === "windows" ? svg(`mods/tabs-graph/${w.maximized ? "win-restore" : "win-max"}.svg`).size(16) : "□", () => run("window.maximize")))
         .child(button("close-window", w.platform === "windows" ? svg("mods/tabs-graph/win-close.svg").size(16) : svg("mods/pane/close.svg").size(13), () => run("window.close"))));
