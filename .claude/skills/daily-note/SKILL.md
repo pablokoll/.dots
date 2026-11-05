@@ -45,7 +45,6 @@ mood: <very bad|bad|normal|good|excellent>
 - Tasks:
   - <tasks>
 - [ ] Exercise (or [x] Exercise - <type> if done)
-- [ ] Habitica Tracker
 
 ---
 ## 🫀 How I feel
