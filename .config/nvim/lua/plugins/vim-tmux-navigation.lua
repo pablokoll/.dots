@@ -20,5 +20,19 @@ return {
     dofile(vim.fn.expand(
       "~/.config/herdr/plugins/github/vim-herdr-navigation-a8bf42123d81/editor/nvim.lua"
     ))
+
+    -- Herdr desktop app (herdr-core sets HC_TERMINAL_ID): the app hands
+    -- <C-h/j/k/l> to nvim; at a split edge, give the move back to the app.
+    if vim.env.HC_TERMINAL_ID and vim.env.HC_TERMINAL_ID ~= "" then
+      for key, dir in pairs({ h = "left", j = "down", k = "up", l = "right" }) do
+        vim.keymap.set("n", "<C-" .. key .. ">", function()
+          local win = vim.api.nvim_get_current_win()
+          vim.cmd("wincmd " .. key)
+          if vim.api.nvim_get_current_win() == win then
+            vim.system({ "herdr-app", "do", "retro-spaces.edge-" .. dir })
+          end
+        end, { silent = true, desc = "Navigate " .. dir .. " (nvim / Herdr app)" })
+      end
+    end
   end,
 }
