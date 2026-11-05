@@ -320,6 +320,9 @@ return {
       if is_daily_note then
         -- Daily notes van a Area/Journal
         return vault_root .. "/Area/Journal/" .. tostring(spec.id) .. ".md"
+      elseif tostring(spec.dir):match("/Archive/Todos/?$") then
+        -- Template Todo (templates.customizations) → Archive/Todos
+        return tostring(spec.dir) .. "/" .. tostring(spec.id) .. ".md"
       else
         -- Notas normales van a Resources/Inbox
         return vault_root .. "/Resources/Inbox/" .. tostring(spec.id) .. ".md"
@@ -536,6 +539,13 @@ return {
       folder = "Resources/Templates",
       date_format = "%Y-%m-%d",
       time_format = "%H:%M",
+      customizations = {
+        -- gd en [[link]] de Habitica.md → "Yes with Template" → Todo
+        Todo = {
+          notes_subdir = "Archive/Todos",
+          note_id_func = function(title) return title or tostring(os.time()) end, -- filename = link, sin slugify
+        },
+      },
     },
 
     -- Attachments (imágenes, PDFs, etc.)
