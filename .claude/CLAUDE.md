@@ -30,6 +30,7 @@ Pair with Caveman: Caveman = terse prose. Ponytail = minimal code. Both active s
 ## General Rules
 
 - `sudo` needed — give command, I run in other terminal. Wait for output unless told otherwise.
+- **Dock monitors black / `0x0` in `hyprctl monitors`** (recurring, ~weekly) → known amdgpu ghost-MST-connector bug. Fix: `Ctrl+Alt+F2` → `Ctrl+Alt+F1`; if dock keyboard/mouse die, reset `usb6` via `authorized` 0/1, never re-plug. Full steps: vault `Area/System/System Index.md` → "ghost MST connector".
 - Outside project: clones/downloads → `~/Documents` or `~/Downloads` — ask if unsure.
 - Vault notes: language matches response language. English → English note. Spanish → Spanish note.
 - English vault note created: check spelling/grammar, ask if want corrections. Skip in normal convo or Spanish.

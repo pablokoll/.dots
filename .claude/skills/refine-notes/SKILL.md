@@ -62,7 +62,7 @@ Ask: "Where do we start?"
 
 **e. Destination** — suggest based on topic:
 - Active CS study → `Projects/Computer Science/<folder>/`
-- Processed technical → `Archive/Engineering/`
+- Processed technical → `Area/Engineering/`
 - Other → matching folder per vault structure
 
 **f. Create file**

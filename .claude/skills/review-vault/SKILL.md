@@ -60,7 +60,7 @@ Then ask: **"Where do we start?"**
 **Inbox note** → ask: process with `/refine-notes`, move to Archive, or discard?
 
 **Inbox note with status/finished** → ask to move to Archive. Suggest subfolder based on content:
-- Engineering/technical → `Archive/Engineering/`
+- Engineering/technical → `Area/Engineering/`
 - Entertainment → `Archive/Entertainment/`
 - Recipes → `Archive/Recipes/`
 - Coffee → `Archive/Coffee's/`
