@@ -124,6 +124,13 @@
               "type": "stack",
               "children": [
                 {
+                  "id": "agent",
+                  "type": "block",
+                  "content": {
+                    "terminal": "a44babcf3fe39592b280cf5c1902d453"
+                  }
+                },
+                {
                   "id": "files",
                   "type": "block",
                   "content": {
@@ -157,7 +164,7 @@
                 "px": 532
               },
               "min": 280,
-              "max": 900
+              "max": 4000
             }
           ],
           "padding": 8,

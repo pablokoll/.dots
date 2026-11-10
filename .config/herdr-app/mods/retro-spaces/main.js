@@ -83,7 +83,8 @@ export default class Spaces extends View {
       for (;;) {
         const c = await nextCommand();
         if (c === "leave") { this.leave(); continue; }
-        if (c === "back") { if (this.lastPane) run("pane.focus", { pane: this.lastPane }); continue; } // from the right panel
+        if (c === "back") { this.backToTab(cx); continue; } // from the right panel
+        if (c === "zoom") { this.zoom(); continue; }
         const nav = /^(nav|edge)-(left|down|up|right)$/.exec(c ?? "");
         if (nav) { this.nav(nav[2], nav[1] === "edge", cx); continue; }
         if (c !== "focus") continue;
@@ -145,6 +146,24 @@ export default class Spaces extends View {
     const f = focused();
     if (edge || !f?.terminal) return this.move(dir, f, cx);
     cx.spawn(async (cx) => {
+      // Fast path: nvim labels its terminal with nvim.server (its RPC socket). Ask it
+      // to move directly; `hc keys` holds keys ~3 s after any typing (quiet rule).
+      // HerdrNav (~/.config/nvim/lua/plugins/vim-tmux-navigation.lua) answers
+      // "moved", "edge" (move panes here) or "input" (passed the key on).
+      const t = terminals().find((x) => x.address === f.terminal);
+      const sock = t?.labels?.["nvim.server"];
+      if (sock) {
+        const slash = f.terminal.indexOf("/");
+        const on = slash > 0 ? f.terminal.slice(0, slash) : null;
+        try {
+          const r = await exec("nvim", ["--server", sock, "--remote-expr", `v:lua.HerdrNav('${NAV_KEY[dir]}')`], { on });
+          const out = (r.stdout ?? "").trim();
+          if (r.code === 0 && ["moved", "edge", "input"].includes(out)) {
+            if (out === "edge") this.move(dir, f, cx);
+            return;
+          }
+        } catch {}
+      }
       // The foreground program, live from the core: the app's own program scan lags
       // by seconds, so a fresh nvim would lose its keys to pane.go meanwhile.
       const r = await hc(["get", f.terminal, "--json"]);
@@ -164,13 +183,16 @@ export default class Spaces extends View {
   // pane.go, and going left with nothing there: the sidebar.
   move(dir, f, cx) {
     if (!f?.pane && f?.terminal) { // the Agent panel's terminal block has the keyboard
-      if (dir === "left" && this.lastPane) run("pane.focus", { pane: this.lastPane });
+      if (dir === "left") this.backToTab(cx);
       return;
     }
     this.lastPane = f?.pane;
-    run("pane.go", { direction: dir });
+    // Zoomed: the tab's other panes are hidden, so don't go to them: ← the sidebar, → the panel.
+    const zoomed = panes().find((p) => p.pane === f?.pane)?.zoomed;
+    if (zoomed && dir !== "left" && dir !== "right") return;
+    if (!zoomed) run("pane.go", { direction: dir });
     // pane.go doesn't reach the right panel: hand it the keyboard (a mod gets "focus").
-    if (dir === "right") cx.timer.after(150, () => {
+    if (dir === "right") cx.timer.after(zoomed ? 10 : 150, () => {
       const root = layout(), node = find(root, find(root, "panel-body")?.active)?.content;
       if (focused()?.pane !== f?.pane || (find(root, "panel") ?? find(root, "panel-body"))?.hidden || !node) return;
       if (node.terminal) run("pane.focus", { terminal: node.terminal });
@@ -184,13 +206,45 @@ export default class Spaces extends View {
       if (seq !== this.navSeq || focused()?.pane !== f?.pane) return; // newer move, or pane.go moved
       const owner = shared("sidebar.owner");
       if (owner?.mod === "retro-agents" && Date.now() - owner.at < 1000) return; // pane.go reached agents
-      if (this.handle.is_focused()) return;
-      this.handle.focus();
-      this.cursorId = this.start();
-      setShared("sidebar.owner", { mod: "retro-spaces", at: Date.now() });
-      cx.notify();
+      if (!this.handle.is_focused()) this.takeList(cx);
     };
     for (const ms of [60, 180, 400]) cx.timer.after(ms, grab);
+  }
+
+  takeList(cx) {
+    this.handle.focus();
+    this.cursorId = this.start();
+    setShared("sidebar.owner", { mod: "retro-spaces", at: Date.now() });
+    cx.notify();
+  }
+
+  // pane.zoom fails on the right panel's blocks: zoom the panel instead (hide the tab area,
+  // panel takes the row), and toggle it back. Otherwise a normal pane zoom.
+  zoom() {
+    const root = layout(), main = find(root, "main"), side = find(root, "panel-body"), f = focused();
+    if (main?.hidden) this.unzoom();
+    else if (side && !side.hidden && !panes().some((p) => p.pane === f?.pane)) {
+      if (side.size?.px) localStorage.setItem("panel.px", String(side.size.px));
+      localStorage.setItem("panel.zoomSpace", f?.space ?? "");
+      run("layout.hide", { id: "main" });
+      run("layout.resize", { id: "panel-body", weight: 1 });
+    } else run("pane.zoom", f?.pane ? { pane: f.pane } : {});
+  }
+
+  unzoom() {
+    localStorage.removeItem("panel.zoomSpace");
+    run("layout.show", { id: "main" });
+    run("layout.resize", { id: "panel-body", px: Number(localStorage.getItem("panel.px")) || 532 });
+  }
+
+  // Right panel → the shown tab: the pane we came from if it's in this tab, else its first.
+  // lastPane goes stale when the panel was entered another way (agents list, a click).
+  // Panel zoomed (tab area hidden): its panes aren't visible, go to the sidebar list.
+  backToTab(cx) {
+    if (find(layout(), "main")?.hidden) return this.takeList(cx);
+    const tab = focused()?.tab, ps = panes().filter((p) => p.tab === tab);
+    const pane = (ps.find((p) => p.pane === this.lastPane) ?? ps[0])?.pane;
+    if (pane) run("pane.focus", { pane });
   }
 
   // pane.focus, not pane.go: pane.go misses when the pane is on another machine.
@@ -562,6 +616,9 @@ export default class Spaces extends View {
   }
 
   render() {
+    // The panel zoom hides the tab area for every space: undo it when the space changes.
+    const zs = localStorage.getItem("panel.zoomSpace"), cur = focused()?.space;
+    if (zs !== null && cur && cur !== zs) this.unzoom();
     const t = theme();
     const collapsed = narrow();
     const palette = ["ansi6", "ansi3", "ansi4", "ansi5", "ansi2", "ansi1"];

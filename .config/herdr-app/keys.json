@@ -51,7 +51,7 @@
     "ctrl-shift-e": "pane.split:down",
     "ctrl-shift-w": "tab.close",
     "ctrl-shift-x": "pane.close",
-    "ctrl-shift-z": "pane.zoom",
+    "ctrl-shift-z": "retro-spaces.zoom",
     "ctrl-shift-l": "send:clear\r",
     "f2": "tab.rename",
     "shift-f2": "space.rename",
@@ -91,10 +91,10 @@
     ",": "tmux-prefix.tab.rename",
     "n": "tmux-prefix.tab.next",
     "p": "tmux-prefix.tab.prev",
-    "z": "tmux-prefix.pane.zoom",
+    "z": "tmux-prefix.retro-spaces.zoom",
     "s": "tmux-prefix.mod.open:picker",
     "w": "tmux-prefix.mod.open:picker",
-    "[": "tmux-prefix.terminal.search",
+    "[": "tmux-prefix.scrollback",
     "1": "tmux-prefix.tab.select:1",
     "2": "tmux-prefix.tab.select:2",
     "3": "tmux-prefix.tab.select:3",
@@ -112,22 +112,32 @@
     "shift-b": "tmux-prefix.panel:right",
     "shift-g": "tmux-prefix.lazygit",
     "shift-r": "tmux-prefix.mod.open:revive",
-    "shift-t": "tmux-prefix.panel:habitica"
+    "shift-t": "tmux-prefix.panel:habitica",
+    "]": "tmux-prefix.copy-mode",
+    "}": "tmux-prefix.flash",
+    "shift-h": "tmux-prefix.resize:left",
+    "shift-j": "tmux-prefix.resize:down",
+    "shift-k": "tmux-prefix.resize:up",
+    "shift-l": "tmux-prefix.resize:right",
+    "shift-a": "tmux-prefix.retro-agents.focus",
+    "shift-s": "tmux-prefix.retro-spaces.focus"
   },
   "mod:retro-spaces": {
     "ctrl-h": "pane.go:left",
-    "ctrl-j": "pane.go:down",
+    "ctrl-j": "retro-agents.focus",
     "ctrl-k": "pane.go:up",
     "ctrl-l": "retro-spaces.leave"
   },
   "mod:retro-agents": {
     "ctrl-h": "pane.go:left",
     "ctrl-j": "pane.go:down",
-    "ctrl-k": "pane.go:up",
+    "ctrl-k": "retro-spaces.focus",
     "ctrl-l": "retro-agents.leave"
   },
   "mod:file-icons": {
-    "ctrl-h": "retro-spaces.back"
+    "ctrl-h": "retro-spaces.back",
+    "ctrl-j": "file-icons.next",
+    "ctrl-k": "file-icons.prev"
   },
   "mod:git-changes": {
     "ctrl-h": "retro-spaces.back"

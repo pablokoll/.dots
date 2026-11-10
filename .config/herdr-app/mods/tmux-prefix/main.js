@@ -1,6 +1,6 @@
 import { View, div } from "gpui-kit";
 import { v_flex, h_flex } from "gpui-base";
-import { closeOverlay, focused, hc, keys, layout, nextCommand, openOverlay, panes, props, run, setShared, spaces, theme } from "herdr";
+import { appHome, closeOverlay, exec, focused, hc, keys, notify, layout, nextCommand, openOverlay, panes, props, run, setShared, spaces, theme } from "herdr";
 
 // Tmux-prefix engine: reads all bindings from keys.json under "mod:tmux-prefix".
 const HINT_DELAY_MS = 200;
@@ -60,7 +60,16 @@ function formatLabel(action) {
     "changes": "Toggle Git: Changes (diff)",
     "graph": "Toggle Git: Graph",
     "github": "Toggle Git: Remote (PRs/Issues)",
-    "scrollback": "Copy / Scrollback mode (j/k/u/d/g/G)",
+    "scrollback": "Scroll mode (j/k/^u/^d/g/G)",
+    "copy-mode": "Copy mode in nvim (v/y)",
+    "resize:left": "Resize pane ← (repeatable)",
+    "resize:down": "Resize pane ↓ (repeatable)",
+    "resize:up": "Resize pane ↑ (repeatable)",
+    "resize:right": "Resize pane → (repeatable)",
+    "flash": "Flash copy (search, vim motions, v/y)",
+    "retro-spaces.zoom": "Zoom pane / right panel",
+    "retro-agents.focus": "Focus agents list",
+    "retro-spaces.focus": "Focus spaces list",
   };
   if (custom[action]) return custom[action];
   const [name, arg] = action.split(":");
@@ -81,10 +90,26 @@ function loadBindings() {
 }
 
 function runAction(action, targetPane, targetCwd, targetTerminal) {
+  const term = targetTerminal ?? focused()?.terminal ?? panes().find((p) => p.pane === targetPane)?.terminal ?? null;
   if (action === "scrollback" || action === "mod.open:scrollback") {
-    const term = targetTerminal ?? focused()?.terminal ?? panes().find((p) => p.pane === targetPane)?.terminal ?? null;
-    setShared("scrollback.request", { terminal: term, pane: targetPane, cwd: targetCwd });
-    run("mod.open", { name: "scrollback" });
+    // Scroll mode: vim keys over Herdr's own view of the history (full, agents too).
+    // Top right: winWidth comes from Hyprland when the prefix opens (this popup is gone after the key).
+    if (term) openOverlay({ mod: "scroll-mode", kind: "window", props: { terminal: term }, at: { x: Math.max(24, winWidth - 470), y: 48 } });
+    return;
+  }
+  if (action === "flash") {
+    // Flash copy: search labels, vim motions, v/V, y → clipboard (mods/flash-copy).
+    if (term) openOverlay({ mod: "flash-copy", kind: "window", width: 0.92, height: 0.85, props: { terminal: term } });
+    return;
+  }
+  if (action === "copy-mode") {
+    // Copy mode: the terminal's screen + history in a read-only nvim (vim motions, v, y → clipboard).
+    // ponytail: hc read gets only the screen of full-screen apps (nvim, Claude); scroll mode covers those.
+    if (!term) return;
+    // Read before zooming (so the source's screen is as it was), then the new pane zooms itself:
+    // run() returns no pane id and a split doesn't take focus.
+    const sh = 'f=$(mktemp); hc read "$1" --lines 100000 >"$f"; herdr-app do pane.focus --terminal "$HC_TERMINAL_ID" >/dev/null && herdr-app do pane.zoom >/dev/null; nvim -R -c "luafile $HOME/.config/herdr-app/mods/tmux-prefix/copy-mode.lua" "$f"; rm -f "$f"';
+    run("pane.split", { direction: "down", ...(targetPane ? { pane: targetPane } : {}), argv: ["sh", "-c", sh, "sh", term] });
     return;
   }
   if (action === "files" || action === "changes" || action === "graph" || action === "github" || action === "prs" || action === "issues" || action === "actions") {
@@ -142,8 +167,11 @@ function runAction(action, targetPane, targetCwd, targetTerminal) {
   run(name, args);
 }
 
+let winWidth = 0;
+
 export default class TmuxPrefix extends View {
   init(_props, cx) {
+    cx.spawn(async () => { try { winWidth = JSON.parse((await exec("hyprctl", ["activewindow", "-j"])).stdout).size?.[0] ?? 0; } catch {} });
     this.handle = cx.focus_handle();
     this.handle.focus();
     cx.timer.after(20, () => {
@@ -156,7 +184,7 @@ export default class TmuxPrefix extends View {
     this.closed = false;
     this.showHint = false;
     cx.timer.after(HINT_DELAY_MS, () => {
-      if (!this.closed) {
+      if (!this.closed && !this.repeating) {
         this.showHint = true;
         cx.notify();
       }
@@ -166,12 +194,36 @@ export default class TmuxPrefix extends View {
         const cmd = await nextCommand();
         if (cmd === "send-prefix") {
           this.sendPrefix(cx);
+        } else if (cmd?.startsWith("resize:")) {
+          this.resize(cmd.slice(7), cx);
         } else if (cmd) {
           this.dismiss();
           runAction(cmd, this.targetPane, this.targetCwd, this.targetTerminal);
         }
       }
     });
+  }
+
+  // Like tmux's bind -r: resize keys repeat without the prefix for a second after each press.
+  // Runs are chained (each reads the layout the last one wrote) and the popup waits for them,
+  // since closing it would cancel a run.
+  resize(dir, cx) {
+    this.repeating = true; this.showHint = false;
+    const f = focused(), pane = this.targetPane;
+    const machine = spaces().find((s) => s.id === f?.space)?.machine ?? "";
+    const side = findNode(layout(), "panel-body");
+    if (side && !side.hidden && !panes().some((p) => p.pane === pane)) { // focus outside the tab: a sidebar block
+      // Right sidebar (agent/files/changes…): its border is on the left, so ← grows it.
+      const px = (this.sidePx ?? side.size?.px ?? 400) + ({ left: 40, right: -40 }[dir] ?? 0);
+      this.sidePx = Math.max(side.min ?? 0, Math.min(side.max ?? 9999, px));
+      run("layout.resize", { id: "panel-body", px: this.sidePx });
+    } else if (f?.tab && pane) {
+      this.chain = (this.chain ?? Promise.resolve()).then(() => exec("python3", [`${appHome()}/mods/tmux-prefix/resize.py`, dir, f.tab, pane, machine]))
+        .then((r) => { if (r.code !== 0) notify({ title: "Resize failed", body: r.stderr.trim().split("\n").pop(), level: "error" }); }, (e) => notify({ title: "Resize failed", body: String(e), level: "error" }));
+    }
+    const at = (this.lastResize = Date.now());
+    cx.timer.after(1000, () => { if (this.lastResize === at) this.chain.finally(() => { if (this.lastResize === at) this.dismiss(); }); });
+    cx.notify();
   }
 
   dismiss() {
@@ -211,6 +263,7 @@ export default class TmuxPrefix extends View {
     }
     const bindings = loadBindings();
     const binding = allow && bindings.find((b) => b.displayKey === key || b.rawKey === key);
+    if (binding?.action.startsWith("resize:")) return this.resize(binding.action.slice(7), cx);
     this.dismiss();
     if (!binding) return;
     runAction(binding.action, this.targetPane, this.targetCwd, this.targetTerminal);

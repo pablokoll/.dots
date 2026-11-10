@@ -42,7 +42,7 @@ Warn if anything potentially sensitive appears (tokens, IPs, passwords).
 | Zed | `~/.config/zed/settings.json`, `~/.config/zed/keymap.json`, `~/.config/zed/themes/` |
 | VSCode | `~/.config/Code/User/settings.json`, `keybindings.json`, `snippets/`, `extensions.txt` |
 | herdr TUI | `~/.config/herdr/config.toml`, `plugins.json`, `plugins/config/` (not `plugins/github/`) |
-| herdr-app | `~/.config/herdr-app/` keys.json, settings.json, layouts/retro.*, themes/, own mods (retro-*, tabs-graph, tmux-prefix, file-icons, git-changes, reviewer, claude-usage, pc-stats, revive) minus `*.d.ts`/`jsconfig.json`; `~/.config/herdr-app-2/` symlinks |
+| herdr-app | `~/.config/herdr-app/` keys.json, settings.json, layouts/{retro,main,terminals,win98}.json + win98.svg, themes/, own mods (retro-*, tabs-graph, tmux-prefix, file-icons, git-changes, reviewer, claude-usage, pc-stats, revive) minus `*.d.ts`/`jsconfig.json`; `~/.config/herdr-app-2/` symlinks |
 | Habitica | `~/.local/bin/habitica-sync`, `~/.config/systemd/user/habitica-sync.{service,timer}`, herdr mod `habitica` (never `~/.config/habitica/credentials`) |
 | SSH (example) | `~/.ssh/config.example` |
 | git | `~/.gitconfig.example` |

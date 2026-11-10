@@ -108,16 +108,35 @@ const SHOP_ART = {
   tag: ["........k.......", "......kkkk......", ".....khhhhk.....", "....khhkkhhk....", "...khhhkkhhhk...", "..khhhhwwhhhhk..", "..khhhwwwwhhhk..", "..khhwwhhhhhhk..", "..khhhwwwwhhhk..", "..khhhhhhwwhhk..", "..khhhwwwwhhhk..", "..khhhhwwhhhhk..", "..khhhhhhhhhhk..", "..kkkkkkkkkkkk..", "................", "................"],
   box: ["................", "................", "...kkkkkkkkkk...", "..kooooyyooook..", ".kkkkkkkkkkkkkk.", ".kOOOOOyyOOOOOk.", ".koooooyyoooook.", ".koooooyyoooook.", ".kooooooooooook.", ".kohhhhoooooook.", ".kohwwhoooooook.", ".kohhhhoooooook.", ".kooooooooooook.", ".kkkkkkkkkkkkkk.", "................", "................"],
 };
-// `size`: the sprite's width in px; cells are as big as fit.
-function sprite(key, size, machine, space, tab) {
-  let rows;
-  {
-    const h = hash(key), names = Object.keys(ART).filter((n) => !Object.values(SPACE_ART).includes(n));
-    const ink = { ...INK, a: SKINS[(h >>> 8) % SKINS.length] };
-    const shop = Object.values(SHOP_ART);
-    const art = machine === "shopimasters" ? shop[h % shop.length] : ART[SPACE_ART[tab?.toLowerCase()] ?? SPACE_ART[space?.toLowerCase()] ?? names[h % names.length]];
-    rows = art.map((r) => { const c = [...r].map((ch) => ink[ch] ?? null); return r.length === 16 ? c : [...c, ...c.slice().reverse()]; });
+const POOL = { ...ART, ...SHOP_ART };
+// One sprite per listed agent, never two alike: themed ones first (tab, then space name),
+// then the rest by address hash, skipping taken ones (shopimasters prefers SHOP_ART).
+// Agents go in address order, so focus, status or sort never reshuffle the pictures.
+// ponytail: more agents than sprites (15) repeats; add art to ART/SHOP_ART when that happens.
+function assignArt(list) {
+  const used = new Set(), out = new Map();
+  const sorted = [...list].sort((a, b) => a.address.localeCompare(b.address));
+  const shop = (a) => a.address.startsWith("shopimasters/");
+  const take = (a, n) => { used.add(n); out.set(a.address, n); };
+  for (const a of sorted) {
+    const n = shop(a) ? null : SPACE_ART[a.tab_name?.toLowerCase()] ?? SPACE_ART[a.space_name?.toLowerCase()];
+    if (n && !used.has(n)) take(a, n);
   }
+  const themed = Object.values(SPACE_ART), all = Object.keys(POOL);
+  for (const a of sorted) {
+    if (out.has(a.address)) continue;
+    const h = hash(a.address);
+    const pick = (names) => { for (let i = 0; i < names.length; i++) { const n = names[(h + i) % names.length]; if (!used.has(n)) return n; } return null; };
+    const first = shop(a) ? Object.keys(SHOP_ART) : Object.keys(ART).filter((n) => !themed.includes(n));
+    take(a, pick(first) ?? pick(all) ?? all[h % all.length]);
+  }
+  return out;
+}
+
+// `size`: the sprite's width in px; cells are as big as fit. `name`: a key of POOL.
+function sprite(key, size, name) {
+  const h = hash(key), ink = { ...INK, a: SKINS[(h >>> 8) % SKINS.length] };
+  const rows = POOL[name].map((r) => { const c = [...r].map((ch) => ink[ch] ?? null); return r.length === 16 ? c : [...c, ...c.slice().reverse()]; });
   const px = Math.floor(size / rows[0].length);
   return v_flex().flex_none().children(rows.map((r) => h_flex().children(r.map((c) => div().size(px).when(Boolean(c), (el) => el.bg(c))))));
 }
@@ -158,6 +177,7 @@ export default class Agents extends View {
         // Any shared write re-renders every mod: the other sidebar block drops its cursor.
         setShared("sidebar.owner", { mod: "retro-agents", at: Date.now() });
         this.cursorId = this.start();
+        this.confirmKill = null; // a y on return must not kill what was asked before
         cx.notify();
       }
     });
@@ -186,7 +206,19 @@ export default class Agents extends View {
     if (m.control || m.alt || m.platform) return;
     const order = this.order ?? [];
     const at = Math.max(0, order.indexOf(this.cursorId));
-    if (e.key === "j" || e.key === "down") this.cursorId = order[Math.min(at + 1, order.length - 1)];
+    // x asks on the card, y kills the agent's terminal (its pane closes with it), any other key cancels.
+    if (this.confirmKill) {
+      const kill = this.confirmKill;
+      this.confirmKill = null;
+      if (e.key === "y") {
+        run("terminal.kill", { terminal: kill });
+        this.cursorId = order[at + 1] ?? order[at - 1];
+      }
+      cx.stop_propagation();
+      return cx.notify();
+    }
+    if (e.key === "x") { if (this.cursorId) this.confirmKill = this.cursorId; }
+    else if (e.key === "j" || e.key === "down") this.cursorId = order[Math.min(at + 1, order.length - 1)];
     else if (e.key === "k" || e.key === "up") this.cursorId = order[Math.max(at - 1, 0)];
     else if (e.key === "enter" || e.key === "l") { if (this.cursorId) this.open(this.cursorId); }
     else if (e.key === "escape") this.leave();
@@ -351,6 +383,7 @@ export default class Agents extends View {
     const rest = list.filter((a) => !a.pinned);
     list = [...pinned, ...rest];
     setAgentOrder(list.map((a) => a.address));
+    const art = assignArt(list);
 
     const withKids = (a, i) => {
       const subs = collapsed ? [] : this.tree(all, a.address);
@@ -425,8 +458,9 @@ export default class Agents extends View {
       const [fill, edge] = CARDS[machineIndex(machine) % CARDS.length];
       const cwd = panes().find((p) => p.pane === a.pane)?.cwd;
       const title = a.space_name && a.space_name !== "~" ? a.space_name : (cwd ? cwd.replace(/\/+$/, "").split("/").pop() : "") || label(a);
-      const word = { working: "WORKING", blocked: "NEEDS YOU", done: "DONE", idle: "IDLE" }[a.status] ?? "?";
-      const tone = a.status === "idle" ? t.muted : t[a.status] ?? t.dim;
+      const asking = this.handle?.is_focused() && this.confirmKill === a.address; // stale after leaving the list
+      const word = asking ? "CLOSE? Y/N" : { working: "WORKING", blocked: "NEEDS YOU", done: "DONE", idle: "IDLE" }[a.status] ?? "?";
+      const tone = asking ? t.blocked : a.status === "idle" ? t.muted : t[a.status] ?? t.dim;
       // A tab number says nothing on a card: the program instead.
       const sub = (more && !/^\d+$/.test(more) ? more : a.program?.name) ?? "";
       this.order?.push(a.address);
@@ -455,7 +489,7 @@ export default class Agents extends View {
           .child(div().absolute().top(5).left(6).size(3).bg(col))
           .when(a.status === "idle", (el) => el.child(div().absolute().top(4).right(4).size(13).border(1).border_color(t.muted).font_family(PX).text_size(10).text_color(t.muted).flex().items_center().justify_center().child("z")))
           .when(a.pinned, (el) => el.child(svg("mods/workspace-chrome/pin.svg").absolute().bottom(4).right(4).size(11).text_color(ACCENT)))
-          .child(div().when(a.status === "working", (el) => el.loop("top", { from: 0, to: -3, period: 700 })).child(sprite(a.address, 48, machine, a.space_name, a.tab_name))))
+          .child(div().when(a.status === "working", (el) => el.loop("top", { from: 0, to: -3, period: 700 })).child(sprite(a.address, 48, art.get(a.address)))))
         .child(v_flex().flex_1().min_w(0).gap(2)
           .child(h_flex().child(div().px(4).border(1).border_color(tone).font_family(PX).text_size(10).text_color(tone)
             .when(a.status === "working" || a.status === "blocked", (el) => el.loop("opacity", { from: 0.45, to: 1, period: 1100 }))
