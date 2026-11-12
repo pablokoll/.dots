@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Herdr 3
+Comment=Third Herdr instance (~/.config/herdr-app-3)
+Exec=env HERDR_APP_HOME=/home/pablo/.config/herdr-app-3 /home/pablo/.local/bin/herdr-app
+Icon=herdr-app
+Terminal=false
+Categories=Development;
+StartupWMClass=herdr-app

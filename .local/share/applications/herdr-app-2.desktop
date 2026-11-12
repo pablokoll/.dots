@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Herdr 2
+Comment=Second Herdr instance (~/.config/herdr-app-2)
+Exec=env HERDR_APP_HOME=/home/pablo/.config/herdr-app-2 /home/pablo/.local/bin/herdr-app
+Icon=herdr-app
+Terminal=false
+Categories=Development;
+StartupWMClass=herdr-app
